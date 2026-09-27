@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { PlayCircle, ShieldAlert, Sparkles, AlertCircle, RotateCcw, Check } from 'lucide-react';
+import { PlayCircle, ShieldAlert, Sparkles, AlertCircle, RotateCcw, Zap } from 'lucide-react';
 
 interface ScenarioBarProps {
   onRunScenario: (scenario: string) => void;
@@ -11,79 +11,86 @@ interface ScenarioBarProps {
 const SCENARIOS = [
   {
     id: '1',
-    label: 'Scenario 1',
-    title: 'Normal Flow',
-    desc: 'Dell Monitor (20 units) -> ALLOW & Execute',
+    num: '01',
+    title: 'Normal Replenishment',
+    desc: '20x Dell Monitors (2,800 TND) passing all 4 gateway safety checks.',
     badge: 'ALLOW',
     badgeClass: 'badge-allow',
     icon: PlayCircle,
     color: '#34d399',
+    glowColor: 'rgba(16, 185, 129, 0.3)',
   },
   {
     id: '2',
-    label: 'Scenario 2',
-    title: 'Anomalous Order',
-    desc: '500 units / 70k TND / New Vendor -> REVIEW',
+    num: '02',
+    title: 'Anomalous Bulk Order',
+    desc: '500 units / 70,000 TND / Unverified vendor triggering Anomaly 0.90.',
     badge: 'HUMAN_REVIEW',
     badgeClass: 'badge-review',
     icon: AlertCircle,
     color: '#fbbf24',
+    glowColor: 'rgba(245, 158, 11, 0.3)',
   },
   {
     id: '3',
-    label: 'Scenario 3',
-    title: 'Prompt Injection',
-    desc: 'Injected wire transfer manipulation -> BLOCK',
+    num: '03',
+    title: 'Prompt Injection Hijack',
+    desc: 'Injected wire transfer mutation intercepted & blocked by RBAC + Intent.',
     badge: 'BLOCK',
     badgeClass: 'badge-block',
     icon: ShieldAlert,
-    color: '#f87171',
+    color: '#f43f5e',
+    glowColor: 'rgba(244, 63, 94, 0.3)',
   },
   {
     id: '4',
-    label: 'Scenario 4',
-    title: 'Recurring Drift',
-    desc: '17 Supplier alias failures clustered',
+    num: '04',
+    title: 'Recurring Alias Drift',
+    desc: '17 colloquial supplier alias failures clustered with 47,830 TND impact.',
     badge: '17 CLUSTERED',
     badgeClass: 'badge-cyan',
     icon: Sparkles,
     color: '#38bdf8',
+    glowColor: 'rgba(56, 189, 248, 0.3)',
   },
   {
     id: '5',
-    label: 'Scenario 5',
-    title: 'Replay Lab Fix',
-    desc: 'Sandbox replay proves 0/17 -> 15/17 (88%)',
-    badge: 'SIGNATURE REPLAY',
+    num: '05',
+    title: 'Replay Lab Fix Proof',
+    desc: 'Sandbox replaying historical traces proving 0/17 ➔ 15/17 (88% recovery).',
+    badge: '88% PROOF',
     badgeClass: 'badge-allow',
     icon: RotateCcw,
-    color: '#10b981',
+    color: '#a855f7',
+    glowColor: 'rgba(168, 85, 247, 0.3)',
   },
 ];
 
 export function ScenarioBar({ onRunScenario, activeScenarioLoading }: ScenarioBarProps) {
   return (
-    <div style={{ marginBottom: '24px' }}>
+    <div style={{ marginBottom: '32px' }}>
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: '10px',
+        marginBottom: '12px',
+        flexWrap: 'wrap',
+        gap: '8px',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Sparkles size={16} color="#38bdf8" />
-          <h2 style={{ fontSize: '14px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', color: 'var(--text-secondary)' }}>
-            Live Demo Scenarios
+          <Zap size={16} color="#38bdf8" />
+          <h2 style={{ fontSize: '13px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-muted)' }}>
+            Live Interactive Scenario Triggers
           </h2>
         </div>
-        <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-          Click any scenario to trigger immediate deterministic ReflexLoop execution
+        <span style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
+          Click any scenario card to trigger immediate real-time ReflexLoop execution
         </span>
       </div>
 
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
         gap: '12px',
       }}>
         {SCENARIOS.map(sc => {
@@ -95,33 +102,43 @@ export function ScenarioBar({ onRunScenario, activeScenarioLoading }: ScenarioBa
               key={sc.id}
               onClick={() => onRunScenario(sc.id)}
               disabled={isLoading}
-              className="glass-card-interactive"
+              className="cyber-card"
               style={{
-                padding: '12px 14px',
+                padding: '14px 16px',
                 textAlign: 'left',
                 cursor: 'pointer',
-                border: '1px solid var(--border-color)',
                 position: 'relative',
                 overflow: 'hidden',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                  {sc.label}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <span style={{ fontSize: '10px', fontWeight: 800, color: sc.color, letterSpacing: '0.5px' }}>
+                  SCENARIO {sc.num}
                 </span>
-                <span className={`badge ${sc.badgeClass}`} style={{ fontSize: '10px' }}>
+                <span className={`badge-neon ${sc.badgeClass}`} style={{ fontSize: '9px', padding: '2px 6px' }}>
                   {sc.badge}
                 </span>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                <Icon size={16} color={sc.color} />
-                <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>
-                  {isLoading ? 'Executing...' : sc.title}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                <div style={{
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '6px',
+                  background: `${sc.color}20`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}>
+                  <Icon size={14} color={sc.color} />
+                </div>
+                <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-main)' }}>
+                  {isLoading ? 'Triggering...' : sc.title}
                 </div>
               </div>
 
-              <div style={{ fontSize: '11px', color: 'var(--text-secondary)', lineHeight: '1.3' }}>
+              <div style={{ fontSize: '11px', color: 'var(--text-dim)', lineHeight: '1.35' }}>
                 {sc.desc}
               </div>
             </button>

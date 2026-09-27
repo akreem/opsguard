@@ -1,13 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Header } from '@/components/Header';
-import { ReflexLoopBar } from '@/components/ReflexLoopBar';
+import { FuturisticHero } from '@/components/FuturisticHero';
+import { InteractiveReflexLoop } from '@/components/InteractiveReflexLoop';
 import { ScenarioBar } from '@/components/ScenarioBar';
-import { HealthOverview } from '@/components/HealthOverview';
-import { FlightRecorderView } from '@/components/FlightRecorderView';
-import { IncidentsView } from '@/components/IncidentsView';
-import { ApprovalsView } from '@/components/ApprovalsView';
+import { LiveConsoleHUD } from '@/components/LiveConsoleHUD';
 import { TraceDetailDrawer } from '@/components/TraceDetailDrawer';
 import { ReplayLabModal } from '@/components/ReplayLabModal';
 import { ApiDocsModal } from '@/components/ApiDocsModal';
@@ -32,10 +30,12 @@ export default function OpsGuardDashboard() {
   const [selectedClusterForReplay, setSelectedClusterForReplay] = useState<FailureCluster | null>(null);
   const [showDocsModal, setShowDocsModal] = useState(false);
 
-  // Loading States
+  // Loading States & Toasts
   const [isRunningBatch, setIsRunningBatch] = useState(false);
   const [activeScenarioLoading, setActiveScenarioLoading] = useState<string | null>(null);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+
+  const consoleRef = useRef<HTMLDivElement>(null);
 
   const showNotification = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
     setNotification({ message, type });
@@ -103,13 +103,12 @@ export default function OpsGuardDashboard() {
       await refreshData();
 
       if (scenarioId === '5') {
-        // Open Replay Modal automatically on Scenario 5
         const freshIncidents = await fetch('/api/incidents').then(r => r.json());
         const supplierCluster = freshIncidents.incidents?.find((c: any) => c.clusterId === 'cluster_supplier_alias_mismatch') || freshIncidents.incidents?.[0];
         if (supplierCluster) {
           setSelectedClusterForReplay(supplierCluster);
         }
-        showNotification('Scenario 5 Replay Lab sandbox verified 0/17 -> 15/17 (88% reduction)!', 'success');
+        showNotification('Scenario 5 Replay Lab sandbox verified 0/17 ➔ 15/17 (88% reduction)!', 'success');
       } else {
         showNotification(`${data.name}: ${data.expectedDecision}`, 'info');
       }
@@ -141,7 +140,7 @@ export default function OpsGuardDashboard() {
       if (selectedClusterForReplay) {
         setSelectedClusterForReplay(data.cluster);
       }
-      showNotification(`Patch successfully approved & deployed into active policy!`, 'success');
+      showNotification(`Patch successfully approved & deployed by hackathon_operator!`, 'success');
     } catch (err: any) {
       showNotification('Approval error: ' + err.message, 'error');
     }
@@ -181,8 +180,17 @@ export default function OpsGuardDashboard() {
     }
   };
 
+  const scrollToConsole = () => {
+    if (consoleRef.current) {
+      consoleRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+      {/* Cyber Grid Background Overlay */}
+      <div className="cyber-grid" />
+
       {/* Top Header */}
       <Header
         systemStatus={systemStatus}
@@ -198,61 +206,53 @@ export default function OpsGuardDashboard() {
           position: 'fixed',
           bottom: '24px',
           right: '24px',
-          background: notification.type === 'success' ? '#065f46' : notification.type === 'error' ? '#991b1b' : '#1e293b',
+          background: notification.type === 'success' ? 'rgba(5, 150, 105, 0.95)' : notification.type === 'error' ? 'rgba(220, 38, 38, 0.95)' : 'rgba(15, 23, 42, 0.95)',
           color: '#ffffff',
           border: '1px solid rgba(255, 255, 255, 0.2)',
-          borderRadius: '8px',
-          padding: '12px 20px',
+          borderRadius: '10px',
+          padding: '12px 22px',
           fontSize: '13px',
-          fontWeight: 600,
-          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5)',
+          fontWeight: 700,
+          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.6)',
           zIndex: 9999,
-          animation: 'pulseGlow 2s ease',
+          backdropFilter: 'blur(10px)',
         }}>
           {notification.message}
         </div>
       )}
 
       {/* Main Content Area */}
-      <main style={{ maxWidth: '1440px', margin: '0 auto', padding: '24px', width: '100%', flex: 1 }}>
-        {/* Architecture ReflexLoop Pipeline */}
-        <ReflexLoopBar />
+      <main style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 28px 48px 28px', width: '100%', flex: 1, position: 'relative', zIndex: 1 }}>
+        {/* Futuristic Hero Section */}
+        <FuturisticHero
+          systemStatus={systemStatus}
+          metrics={metrics}
+          onLaunchDemo={scrollToConsole}
+          onRunBatch={handleRunBatch}
+          isRunningBatch={isRunningBatch}
+        />
 
-        {/* 5 Scenario Trigger Buttons */}
+        {/* Interactive ReflexLoop Highway */}
+        <InteractiveReflexLoop />
+
+        {/* Live Scenario Fast-Triggers */}
         <ScenarioBar
           onRunScenario={handleRunScenario}
           activeScenarioLoading={activeScenarioLoading}
         />
 
-        {/* Health Overview Metric Gauges */}
-        <HealthOverview metrics={metrics} />
-
-        {/* Two Column Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 0.8fr)',
-          gap: '20px',
-        }}>
-          {/* Left Column: Live Flight Recorder Stream & Human Review Queue */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <FlightRecorderView
-              traces={traces}
-              onSelectTrace={tr => setSelectedTrace(tr)}
-            />
-
-            <ApprovalsView
-              approvals={approvals}
-              onDecision={handleApprovalDecision}
-            />
-          </div>
-
-          {/* Right Column: Failure Memory & Blast Radius & Replay Sandbox */}
-          <div>
-            <IncidentsView
-              incidents={incidents}
-              onOpenReplay={cl => setSelectedClusterForReplay(cl)}
-            />
-          </div>
+        {/* Mission Control Live Console HUD */}
+        <div ref={consoleRef} style={{ scrollMarginTop: '90px' }}>
+          <LiveConsoleHUD
+            traces={traces}
+            incidents={incidents}
+            approvals={approvals}
+            metrics={metrics}
+            onSelectTrace={tr => setSelectedTrace(tr)}
+            onOpenReplay={cl => setSelectedClusterForReplay(cl)}
+            onApprovalDecision={handleApprovalDecision}
+            onOpenDocs={() => setShowDocsModal(true)}
+          />
         </div>
       </main>
 
@@ -271,7 +271,7 @@ export default function OpsGuardDashboard() {
         onTriggerReplay={handleTriggerReplay}
       />
 
-      {/* API Contract & Docs Modal for Lovable Frontend */}
+      {/* API Specs Modal for Lovable Frontend */}
       {showDocsModal && (
         <ApiDocsModal onClose={() => setShowDocsModal(false)} />
       )}
