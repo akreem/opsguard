@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Header } from '@/components/Header';
 import { FuturisticHero } from '@/components/FuturisticHero';
 import { InteractiveReflexLoop } from '@/components/InteractiveReflexLoop';
+import { ReflexFlowCanvas } from '@/components/flow/ReflexFlowCanvas';
 import { ScenarioBar } from '@/components/ScenarioBar';
 import { LiveConsoleHUD } from '@/components/LiveConsoleHUD';
 import { TraceDetailDrawer } from '@/components/TraceDetailDrawer';
@@ -234,6 +235,9 @@ export default function OpsGuardDashboard() {
 
         {/* Interactive ReflexLoop Highway */}
         <InteractiveReflexLoop />
+
+        {/* n8n / Hivvy Flow Style Interactive Automation Loop Canvas */}
+        <ReflexFlowCanvas />
 
         {/* Live Scenario Fast-Triggers */}
         <ScenarioBar
