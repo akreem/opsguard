@@ -16,6 +16,7 @@ export async function POST(
       clusterId: params.id,
       patchType: body.patchType,
       actor: body.actor || 'hackathon_operator',
+      model: body.model,
     });
 
     return jsonResponse(result);

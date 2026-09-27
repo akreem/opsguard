@@ -121,8 +121,12 @@ export default function OpsGuardDashboard() {
   };
 
   // Handler: Trigger Replay Sandbox
-  const handleTriggerReplay = async (clusterId: string): Promise<ReplayResult> => {
-    const res = await fetch(`/api/incidents/${clusterId}/replay`, { method: 'POST' });
+  const handleTriggerReplay = async (clusterId: string, model?: string): Promise<ReplayResult> => {
+    const res = await fetch(`/api/incidents/${clusterId}/replay`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model }),
+    });
     const data = await res.json();
     await refreshData();
     return data;

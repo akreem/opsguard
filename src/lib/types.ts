@@ -1,5 +1,5 @@
 export type PolicyDecision = 'ALLOW' | 'HUMAN_REVIEW' | 'BLOCK';
-export type DecisionSource = 'LIVE_JEV' | 'CACHED_JEV' | 'DEMO_FIXTURE' | 'LOCAL_POLICY';
+export type DecisionSource = 'AGENT_ROUTER' | 'LIVE_JEV' | 'CACHED_JEV' | 'DEMO_FIXTURE' | 'LOCAL_POLICY';
 export type RiskLevel = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 export type FailureFamily = 'ENTITY_RESOLUTION' | 'BAD_ARGUMENT' | 'TIMEOUT' | 'SEMANTIC_FAILURE' | 'POLICY_VIOLATION' | 'UNKNOWN';
 export type SeverityLevel = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
@@ -125,6 +125,17 @@ export interface FlightTrace {
   recoveredByPatch?: boolean;
 }
 
+export interface AiSandboxAudit {
+  model: string;
+  provider: 'AGENT_ROUTER' | 'NVIDIA' | 'FIXTURE';
+  verdict: 'APPROVED_SAFE_FOR_PRODUCTION' | 'HUMAN_REVIEW_RECOMMENDED';
+  safetyScore: number;
+  mathematicalNonMutationVerified: boolean;
+  executiveSummary: string;
+  regressionRisk: string;
+  latencyMs: number;
+}
+
 export interface RootCauseDiagnosis {
   root_cause: string;
   why_it_happened: string;
@@ -132,7 +143,7 @@ export interface RootCauseDiagnosis {
   expected_effect: string;
   limitations: string;
   diagnosedAt: string;
-  provider: 'NVIDIA' | 'OPENROUTER' | 'FIXTURE';
+  provider: 'AGENT_ROUTER' | 'NVIDIA' | 'OPENROUTER' | 'FIXTURE';
 }
 
 export interface ProposedPatch {
@@ -172,6 +183,7 @@ export interface ReplayResult {
   new_regressions: number;
   failure_reduction_percent: number;
   details: ReplayCaseDetail[];
+  aiAudit?: AiSandboxAudit;
 }
 
 export interface FailureCluster {
@@ -230,7 +242,9 @@ export interface HealthMetrics {
 
 export interface SystemStatus {
   jev: 'LIVE' | 'FIXTURE';
-  rootCauseModel: 'NVIDIA' | 'OPENROUTER' | 'FIXTURE';
+  rootCauseModel: 'AGENT_ROUTER' | 'NVIDIA' | 'OPENROUTER' | 'FIXTURE';
+  agentRouterModel?: string;
+  availableModels?: string[];
   policyEngine: 'ACTIVE';
   flightRecorder: 'ACTIVE';
   replaySandbox: 'READY';

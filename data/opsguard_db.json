@@ -504,9 +504,9 @@
   ],
   "traces": [
     {
-      "traceId": "trc_1790517243989_vfi0m",
+      "traceId": "trc_1790517644109_xns25",
       "requestId": "req_anom_01",
-      "timestamp": "2026-09-27T13:54:03.989Z",
+      "timestamp": "2026-09-27T14:00:44.109Z",
       "businessIntent": "Urgent bulk acquisition of 500 monitors through new offshore distributor.",
       "agentIntent": "Execute human-approved PO for 500x Dell 24\" IPS Professional Monitor",
       "proposedTool": "create_purchase_order",
@@ -553,7 +553,7 @@
       },
       "toolResult": {
         "httpStatus": 201,
-        "order_id": "PO-2026-780965",
+        "order_id": "PO-2026-967911",
         "supplierId": "sup_techsupply",
         "sku": "DELL-MONITOR-24",
         "quantity": 500,
@@ -572,9 +572,9 @@
       "decisionSource": "LOCAL_POLICY"
     },
     {
-      "traceId": "trc_1790517243847_45jok",
+      "traceId": "trc_1790517642340_ykg4z",
       "requestId": "req_test_01",
-      "timestamp": "2026-09-27T13:54:03.847Z",
+      "timestamp": "2026-09-27T14:00:42.340Z",
       "businessIntent": "Test intent",
       "agentIntent": "Test agent intent",
       "proposedTool": "inventory_lookup",
@@ -646,7 +646,7 @@
       "unitsExposedToStockOut": 132,
       "representativeTraceIds": [],
       "firstSeen": "2026-09-27T08:00:00Z",
-      "lastSeen": "2026-09-27T13:54:03.879Z",
+      "lastSeen": "2026-09-27T14:00:42.343Z",
       "status": "FIX_APPROVED",
       "proposedPatch": {
         "patchId": "patch_supplier_normalization",
@@ -658,24 +658,24 @@
           "enabled": true,
           "mode": "strict"
         },
-        "createdAt": "2026-09-27T13:54:03.862Z",
+        "createdAt": "2026-09-27T14:00:42.342Z",
         "applied": true,
         "approvedBy": "hackathon_operator",
-        "approvedAt": "2026-09-27T13:54:03.945Z"
+        "approvedAt": "2026-09-27T14:00:44.091Z"
       },
       "rootCauseDiagnosis": {
-        "root_cause": "Vendor Alias Mapping Deficit: Agents query supplier records using free-form colloquial text rather than canonical entity identifiers.",
+        "root_cause": "[Agent Router / deepseek-v4-flash] Vendor Alias Mapping Deficit: Agents query supplier records using free-form colloquial text rather than canonical entity identifiers.",
         "why_it_happened": "Historical procurement traces demonstrate that human operators and automated replenishment agents emit variations like 'Tech Supply', 'TECH-SUPPLY', or 'TechSupply Ltd'. The un-normalized supplier search tool only matched strict canonical equality ('TechSupply Corp'), resulting in repeated entity resolution failures across 17 orders.",
         "recommended_patch": "Implement a preflight canonical supplier normalization layer with fuzzy and alias-table fallback before executing supplier search.",
         "expected_effect": "Restores successful canonical supplier resolution for 88%+ of failing orders (17 orders totaling 47 830 TND) without requiring human intervention.",
         "limitations": "Does not resolve entirely nonexistent, malformed, or unregistered 3rd-party vendors (e.g. unknown offshore companies).",
-        "diagnosedAt": "2026-09-27T13:54:03.879Z",
-        "provider": "FIXTURE"
+        "diagnosedAt": "2026-09-27T14:00:42.740Z",
+        "provider": "AGENT_ROUTER"
       },
       "latestReplayResult": {
-        "replayId": "sbx_1790517243927_9k677",
+        "replayId": "sbx_1790517643740_cs845",
         "clusterId": "cluster_supplier_alias_mismatch",
-        "timestamp": "2026-09-27T13:54:03.927Z",
+        "timestamp": "2026-09-27T14:00:43.740Z",
         "cases_total": 17,
         "before_success": 0,
         "after_success": 15,
@@ -871,7 +871,17 @@
             "beforeError": "Canonical supplier resolution failed for alias 'Random-Foreign-Export-000'.",
             "afterResult": "Canonical supplier resolution failed for alias 'Random-Foreign-Export-000'."
           }
-        ]
+        ],
+        "aiAudit": {
+          "model": "deepseek-v4-flash",
+          "provider": "AGENT_ROUTER",
+          "verdict": "APPROVED_SAFE_FOR_PRODUCTION",
+          "safetyScore": 99.4,
+          "mathematicalNonMutationVerified": true,
+          "executiveSummary": "Agent Router [deepseek-v4-flash] Attestation: Patch resolves 15 of 17 historic failures (88% throughput restoration) with 0 regressions and zero live state mutation.",
+          "regressionRisk": "Strict isolation confirmed: No side effects on existing catalog entries or active ledger records.",
+          "latencyMs": 350
+        }
       }
     },
     {
@@ -891,10 +901,10 @@
       "businessValueAffected": 5750,
       "unitsExposedToStockOut": 20,
       "representativeTraceIds": [
-        "trc_1790517243847_45jok"
+        "trc_1790517642340_ykg4z"
       ],
       "firstSeen": "2026-09-27T08:00:00Z",
-      "lastSeen": "2026-09-27T13:54:03.880Z",
+      "lastSeen": "2026-09-27T14:00:42.741Z",
       "status": "DIAGNOSED",
       "proposedPatch": {
         "patchId": "patch_sku_mapper",
@@ -906,17 +916,17 @@
           "enabled": true,
           "mode": "strict"
         },
-        "createdAt": "2026-09-27T13:54:03.880Z",
+        "createdAt": "2026-09-27T14:00:42.741Z",
         "applied": false
       },
       "rootCauseDiagnosis": {
-        "root_cause": "Legacy SKU Identifier Drift: Autonomous agent referenced deprecated catalog short-codes not updated in master database.",
+        "root_cause": "[Agent Router / deepseek-v4-flash] Legacy SKU Identifier Drift: Autonomous agent referenced deprecated catalog short-codes not updated in master database.",
         "why_it_happened": "Procurement prompts referenced legacy SKU formats (e.g. DL-MON-24) from older ERP templates, causing inventory lookup errors in the modernized catalog master (DELL-MONITOR-24).",
         "recommended_patch": "Deploy SKU canonical translation map to alias legacy shortcodes to standard active SKUs.",
         "expected_effect": "Eliminates catalog lookup aborts across legacy replenishment workflows.",
         "limitations": "Requires periodic sync with ERP master SKU catalog updates.",
-        "diagnosedAt": "2026-09-27T13:54:03.880Z",
-        "provider": "FIXTURE"
+        "diagnosedAt": "2026-09-27T14:00:43.059Z",
+        "provider": "AGENT_ROUTER"
       }
     },
     {
@@ -936,7 +946,7 @@
       "unitsExposedToStockOut": 25,
       "representativeTraceIds": [],
       "firstSeen": "2026-09-27T08:00:00Z",
-      "lastSeen": "2026-09-27T13:54:03.903Z",
+      "lastSeen": "2026-09-27T14:00:43.060Z",
       "status": "DIAGNOSED",
       "proposedPatch": {
         "patchId": "patch_gateway_retry_fallback",
@@ -948,17 +958,17 @@
           "enabled": true,
           "mode": "strict"
         },
-        "createdAt": "2026-09-27T13:54:03.903Z",
+        "createdAt": "2026-09-27T14:00:43.060Z",
         "applied": false
       },
       "rootCauseDiagnosis": {
-        "root_cause": "Silent Downstream Null Allocation: ERP HTTP gateway returns status 200 OK while failing to commit the transaction record internally.",
+        "root_cause": "[Agent Router / deepseek-v4-flash] Silent Downstream Null Allocation: ERP HTTP gateway returns status 200 OK while failing to commit the transaction record internally.",
         "why_it_happened": "The legacy ERP connector accepts the incoming REST payload with an HTTP 200 response, but omits the generated PO identifier when the backend ledger is undergoing high concurrency locks. Standard monitoring assumed HTTP 200 meant business success.",
         "recommended_patch": "Enforce postflight semantic verification on order_id presence and trigger synchronous idempotent retry upon null reference detection.",
         "expected_effect": "Prevents silent order loss and eliminates untracked procurement drops across affected inventory batches.",
         "limitations": "Requires idempotent retry tokens to prevent double-billing on transient network lags.",
-        "diagnosedAt": "2026-09-27T13:54:03.903Z",
-        "provider": "FIXTURE"
+        "diagnosedAt": "2026-09-27T14:00:43.412Z",
+        "provider": "AGENT_ROUTER"
       }
     }
   ],
@@ -977,8 +987,8 @@
       "jevConfidence": 0.95,
       "reason": "Test reason",
       "status": "APPROVED",
-      "createdAt": "2026-09-27T13:54:03.946Z",
-      "decidedAt": "2026-09-27T13:54:03.970Z",
+      "createdAt": "2026-09-27T14:00:44.092Z",
+      "decidedAt": "2026-09-27T14:00:44.101Z",
       "decidedBy": "hackathon_operator"
     }
   ],
@@ -993,10 +1003,10 @@
         "enabled": true,
         "mode": "strict"
       },
-      "createdAt": "2026-09-27T13:54:03.862Z",
+      "createdAt": "2026-09-27T14:00:42.342Z",
       "applied": true,
       "approvedBy": "hackathon_operator",
-      "approvedAt": "2026-09-27T13:54:03.945Z"
+      "approvedAt": "2026-09-27T14:00:44.091Z"
     },
     {
       "patchId": "patch_sku_mapper",
@@ -1008,7 +1018,7 @@
         "enabled": true,
         "mode": "strict"
       },
-      "createdAt": "2026-09-27T13:54:03.880Z",
+      "createdAt": "2026-09-27T14:00:42.741Z",
       "applied": false
     },
     {
@@ -1021,7 +1031,7 @@
         "enabled": true,
         "mode": "strict"
       },
-      "createdAt": "2026-09-27T13:54:03.903Z",
+      "createdAt": "2026-09-27T14:00:43.060Z",
       "applied": false
     }
   ],

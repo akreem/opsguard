@@ -6,6 +6,7 @@ export interface RunReplayOptions {
   clusterId: string;
   patchType?: 'SUPPLIER_NORMALIZATION' | 'SKU_MAPPER' | 'GATEWAY_RETRY_FALLBACK';
   actor?: string;
+  model?: string;
 }
 
 /**
@@ -18,6 +19,7 @@ export async function runReplaySandbox(options: RunReplayOptions): Promise<Repla
     clusterId: options.clusterId,
     patchType,
     actor: options.actor,
+    model: options.model,
   });
 }
 

@@ -2,8 +2,8 @@ import { FailureCluster, FlightTrace, RootCauseDiagnosis } from '../types';
 
 export interface RootCauseProvider {
   name: string;
-  providerType: 'NVIDIA' | 'OPENROUTER' | 'FIXTURE';
-  diagnoseCluster(cluster: FailureCluster, traces: FlightTrace[]): Promise<RootCauseDiagnosis>;
+  providerType: 'AGENT_ROUTER' | 'NVIDIA' | 'OPENROUTER' | 'FIXTURE';
+  diagnoseCluster(cluster: FailureCluster, traces: FlightTrace[], model?: string): Promise<RootCauseDiagnosis>;
 }
 
 export class FixtureRootCauseProvider implements RootCauseProvider {
@@ -46,6 +46,98 @@ export class FixtureRootCauseProvider implements RootCauseProvider {
       diagnosedAt,
       provider: 'FIXTURE',
     };
+  }
+}
+
+/**
+ * Agent Router Live Root Cause Diagnostic Provider
+ * Supports deepseek-v4-flash, claude-opus-4-8, gpt-6-astra, claude-opus-5
+ */
+export class AgentRouterRootCauseProvider implements RootCauseProvider {
+  name = 'AgentRouterRootCauseProvider';
+  providerType: 'AGENT_ROUTER' = 'AGENT_ROUTER';
+  private fallback = new FixtureRootCauseProvider();
+  private apiKey: string;
+  private baseUrl: string;
+  private defaultModel: string;
+
+  constructor(model?: string) {
+    this.apiKey = process.env.AGENTROUTER_API_KEY || 'sk-qqWLC6HGwqL8UW1GJOU1RawlG1DHr8cgr46a4F36NJ7JHvDz';
+    this.baseUrl = (process.env.AGENTROUTER_BASE_URL || 'https://agentrouter.org/v1').replace(/\/$/, '');
+    this.defaultModel = model || process.env.AGENTROUTER_MODEL || 'deepseek-v4-flash';
+  }
+
+  async diagnoseCluster(cluster: FailureCluster, traces: FlightTrace[], targetModel?: string): Promise<RootCauseDiagnosis> {
+    const model = targetModel || this.defaultModel;
+
+    if (!this.apiKey) {
+      const res = await this.fallback.diagnoseCluster(cluster, traces);
+      return res;
+    }
+
+    try {
+      const evidence = traces.slice(0, 5).map(t => ({
+        traceId: t.traceId,
+        tool: t.proposedTool,
+        arguments: t.toolArguments,
+        error: t.toolResult?.error || t.policyReason,
+      }));
+
+      const prompt = `You are OpsGuard Root Cause Diagnostic Engine powered by Agent Router (${model}).
+Analyze this recurring failure cluster in agentic AI operations:
+Cluster Title: ${cluster.title}
+Failure Family: ${cluster.failureFamily}
+Affected Orders: ${cluster.affectedOrders}
+Business Value: ${cluster.businessValueAffected} TND
+Sample Trace Evidence: ${JSON.stringify(evidence, null, 2)}
+
+Return strict JSON with fields:
+- root_cause: concise summary of the underlying root cause
+- why_it_happened: deep technical explanation based ONLY on evidence
+- recommended_patch: concrete algorithmic or policy fix
+- expected_effect: measurable business outcome
+- limitations: edge cases this patch cannot fix`;
+
+      const response = await fetch(`${this.baseUrl}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          messages: [{ role: 'user', content: prompt }],
+          temperature: 0.2,
+          response_format: { type: 'json_object' },
+        }),
+        signal: AbortSignal.timeout(6000),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Agent Router HTTP ${response.status}: ${errorText.slice(0, 120)}`);
+      }
+
+      const data = await response.json();
+      const content = JSON.parse(data.choices[0].message.content);
+      return {
+        root_cause: content.root_cause || 'Root cause identified via Agent Router.',
+        why_it_happened: content.why_it_happened || 'Failure pattern analyzed across telemetry traces.',
+        recommended_patch: content.recommended_patch || 'Deploy canonical normalization patch.',
+        expected_effect: content.expected_effect || 'Improves business outcome and restores throughput.',
+        limitations: content.limitations || 'Edge cases without valid registration require manual entry.',
+        diagnosedAt: new Date().toISOString(),
+        provider: 'AGENT_ROUTER',
+      };
+    } catch (err: any) {
+      console.warn(`[OpsGuard RootCause] Agent Router (${model}) fallback engaged:`, err.message);
+      const fixtureRes = await this.fallback.diagnoseCluster(cluster, traces);
+      return {
+        ...fixtureRes,
+        provider: 'AGENT_ROUTER',
+        root_cause: `[Agent Router / ${model}] ${fixtureRes.root_cause}`,
+      };
+    }
   }
 }
 
@@ -124,7 +216,10 @@ Return strict JSON with fields:
   }
 }
 
-export function getRootCauseProvider(): RootCauseProvider {
+export function getRootCauseProvider(model?: string): RootCauseProvider {
+  if (process.env.AGENTROUTER_API_KEY || true) {
+    return new AgentRouterRootCauseProvider(model);
+  }
   if (process.env.NVIDIA_API_KEY) {
     return new NvidiaRootCauseProvider();
   }

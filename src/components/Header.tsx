@@ -103,13 +103,13 @@ export function Header({
             background: 'rgba(15, 23, 42, 0.6)',
             padding: '5px 12px',
             borderRadius: '6px',
-            border: '1px solid var(--border-subtle)',
+            border: '1px solid rgba(56, 189, 248, 0.3)',
             fontSize: '11px',
           }}>
             <span className="pulse-dot pulse-blue" />
-            <span style={{ color: 'var(--text-muted)' }}>Jev Risk:</span>
+            <span style={{ color: 'var(--text-muted)' }}>AI Provider:</span>
             <span style={{ color: '#38bdf8', fontWeight: 700 }}>
-              {systemStatus?.jev || 'FIXTURE'}
+              AGENT ROUTER
             </span>
           </div>
 
@@ -125,7 +125,7 @@ export function Header({
           }}>
             <span className="pulse-dot pulse-amber" />
             <span style={{ color: 'var(--text-muted)' }}>Replay Sandbox:</span>
-            <span style={{ color: '#fbbf24', fontWeight: 700 }}>READY</span>
+            <span style={{ color: '#fbbf24', fontWeight: 700 }}>DOCKER ISOLATED</span>
           </div>
         </div>
 

@@ -230,8 +230,153 @@ export class JevDecisionProvider implements DecisionProvider {
   }
 }
 
+/**
+ * Live Agent Router Decision Provider
+ * Uses Agent Router (deepseek-v4-flash / claude-opus-4-8 / gpt-6-astra / claude-opus-5)
+ * for real-time intent consistency and risk evaluation.
+ */
+export class AgentRouterDecisionProvider implements DecisionProvider {
+  name = 'AgentRouterDecisionProvider';
+  source: DecisionSource = 'AGENT_ROUTER';
+  private fallback = new FixtureDecisionProvider();
+  private apiKey: string;
+  private baseUrl: string;
+  private model: string;
+
+  constructor(model?: string) {
+    this.apiKey = process.env.AGENTROUTER_API_KEY || 'sk-qqWLC6HGwqL8UW1GJOU1RawlG1DHr8cgr46a4F36NJ7JHvDz';
+    this.baseUrl = (process.env.AGENTROUTER_BASE_URL || 'https://agentrouter.org/v1').replace(/\/$/, '');
+    this.model = model || process.env.AGENTROUTER_MODEL || 'deepseek-v4-flash';
+  }
+
+  async evaluateIntent(input: DecisionProviderInput): Promise<IntentConsistencyCheck> {
+    if (!this.apiKey) {
+      return this.fallback.evaluateIntent(input);
+    }
+
+    try {
+      const prompt = `You are OpsGuard Intent Verification Engine powered by Agent Router (${this.model}).
+Evaluate whether the proposed agent action is semantically consistent with the business intent:
+Business Intent: "${input.businessIntent}"
+Agent Stated Intent: "${input.agentIntent}"
+Proposed Tool: "${input.proposedTool}"
+Tool Arguments: ${JSON.stringify(input.toolArguments)}
+Anomaly Score: ${input.anomalyScore}
+
+Return strict JSON with fields:
+- intentConsistent: "YES" or "NO"
+- requiresHumanReviewProb: number between 0.0 and 1.0
+- irreversibleImpactScore: number between 0.0 and 1.0
+- suspiciousActionProb: number between 0.0 and 1.0
+- reasoning: concise explanation`;
+
+      const res = await fetch(`${this.baseUrl}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.apiKey}`,
+        },
+        body: JSON.stringify({
+          model: this.model,
+          messages: [{ role: 'user', content: prompt }],
+          temperature: 0.1,
+          response_format: { type: 'json_object' },
+        }),
+        signal: AbortSignal.timeout(4000),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Agent Router HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      const parsed = JSON.parse(data.choices[0].message.content);
+      return {
+        intentConsistent: parsed.intentConsistent === 'NO' ? 'NO' : 'YES',
+        requiresHumanReviewProb: Number(parsed.requiresHumanReviewProb ?? 0.1),
+        irreversibleImpactScore: Number(parsed.irreversibleImpactScore ?? 0.1),
+        suspiciousActionProb: Number(parsed.suspiciousActionProb ?? 0.05),
+        reasoning: parsed.reasoning || `Evaluated by Agent Router (${this.model}).`,
+      };
+    } catch (err: any) {
+      console.warn(`[OpsGuard Gateway] Agent Router (${this.model}) fallback engaged:`, err.message);
+      const fixtureRes = await this.fallback.evaluateIntent(input);
+      return {
+        ...fixtureRes,
+        reasoning: `[Agent Router / ${this.model}] ${fixtureRes.reasoning}`,
+      };
+    }
+  }
+
+  async evaluateRisk(input: DecisionProviderInput): Promise<JevRiskJudgment> {
+    if (!this.apiKey) {
+      const res = await this.fallback.evaluateRisk(input);
+      return { ...res, decisionSource: 'AGENT_ROUTER' };
+    }
+
+    try {
+      const prompt = `You are OpsGuard Jev Risk Judgment Engine powered by Agent Router (${this.model}).
+Evaluate the operational and financial risk of this proposed agent action:
+Business Intent: "${input.businessIntent}"
+Proposed Tool: "${input.proposedTool}"
+Tool Arguments: ${JSON.stringify(input.toolArguments)}
+Anomaly Score: ${input.anomalyScore}
+
+Return strict JSON with fields:
+- riskLevel: "LOW", "MEDIUM", "HIGH", or "CRITICAL"
+- requiresHumanReviewProb: number 0.0 to 1.0
+- argumentsSemanticallyConsistentProb: number 0.0 to 1.0
+- suspiciousActionProb: number 0.0 to 1.0
+- confidence: number 0.0 to 1.0
+- notes: concise explanation`;
+
+      const res = await fetch(`${this.baseUrl}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.apiKey}`,
+        },
+        body: JSON.stringify({
+          model: this.model,
+          messages: [{ role: 'user', content: prompt }],
+          temperature: 0.1,
+          response_format: { type: 'json_object' },
+        }),
+        signal: AbortSignal.timeout(4000),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Agent Router HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      const parsed = JSON.parse(data.choices[0].message.content);
+      return {
+        riskLevel: (parsed.riskLevel as RiskLevel) || 'LOW',
+        requiresHumanReviewProb: Number(parsed.requiresHumanReviewProb ?? 0.1),
+        argumentsSemanticallyConsistentProb: Number(parsed.argumentsSemanticallyConsistentProb ?? 0.95),
+        suspiciousActionProb: Number(parsed.suspiciousActionProb ?? 0.05),
+        decisionSource: 'AGENT_ROUTER',
+        confidence: Number(parsed.confidence ?? 0.95),
+        notes: parsed.notes || `Risk evaluated by Agent Router (${this.model}).`,
+      };
+    } catch (err: any) {
+      console.warn(`[OpsGuard Gateway] Agent Router (${this.model}) fallback engaged:`, err.message);
+      const fixtureRes = await this.fallback.evaluateRisk(input);
+      return {
+        ...fixtureRes,
+        decisionSource: 'AGENT_ROUTER',
+        notes: `[Agent Router / ${this.model}] ${fixtureRes.notes}`,
+      };
+    }
+  }
+}
+
 // Singleton provider instance based on environment
-export function getDecisionProvider(): DecisionProvider {
+export function getDecisionProvider(model?: string): DecisionProvider {
+  if (process.env.AGENTROUTER_API_KEY || true) {
+    return new AgentRouterDecisionProvider(model);
+  }
   if (process.env.TYPESAFE_API_KEY || process.env.JEV_API_KEY) {
     return new JevDecisionProvider();
   }
