@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -25,13 +25,21 @@ import {
   Shield,
   Zap,
   Info,
+  Maximize2,
+  Minimize2,
+  X,
 } from 'lucide-react';
 
-export function ReflexFlowCanvas() {
+interface ReflexFlowCanvasProps {
+  initialFullscreen?: boolean;
+}
+
+export function ReflexFlowCanvas({ initialFullscreen = false }: ReflexFlowCanvasProps) {
   const [currentDomain, setCurrentDomain] = useState<string>('procurement');
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
   const [activeStepIndex, setActiveStepIndex] = useState<number | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(initialFullscreen);
 
   const domainConfig: DomainConfig = DOMAIN_PRESETS[currentDomain] || DOMAIN_PRESETS.procurement;
 
@@ -57,6 +65,17 @@ export function ReflexFlowCanvas() {
   const onNodeClick = useCallback((_: React.MouseEvent, node: Node) => {
     setSelectedNode(node);
   }, []);
+
+  // Listen to Escape key to exit fullscreen
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isFullscreen]);
 
   // Step-by-step Live Highway Simulation
   const handleRunSimulation = async () => {
@@ -109,17 +128,42 @@ export function ReflexFlowCanvas() {
   };
 
   return (
-    <div className="cyber-panel" style={{ padding: '0', overflow: 'hidden', marginBottom: '32px' }}>
+    <div
+      className={isFullscreen ? '' : 'cyber-panel'}
+      style={
+        isFullscreen
+          ? {
+              position: 'fixed',
+              inset: 0,
+              zIndex: 99999,
+              width: '100vw',
+              height: '100vh',
+              background: '#030712',
+              display: 'flex',
+              flexDirection: 'column',
+            }
+          : {
+              padding: '0',
+              overflow: 'hidden',
+              marginBottom: '24px',
+              display: 'flex',
+              flexDirection: 'column',
+              height: 'calc(100vh - 200px)',
+              minHeight: '740px',
+            }
+      }
+    >
       {/* Top Workflow Editor Header */}
       <div style={{
-        background: 'rgba(15, 23, 42, 0.95)',
+        background: 'rgba(15, 23, 42, 0.96)',
         borderBottom: '1px solid var(--border-subtle)',
-        padding: '14px 20px',
+        padding: '12px 20px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
         gap: '12px',
+        flexShrink: 0,
       }}>
         {/* Domain Title & Badge */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -150,7 +194,7 @@ export function ReflexFlowCanvas() {
           </div>
         </div>
 
-        {/* Domain Selector Tabs */}
+        {/* Domain Selector Tabs & Fullscreen Action */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginRight: '4px' }}>
             Domain Preset:
@@ -189,12 +233,36 @@ export function ReflexFlowCanvas() {
             <Play size={13} />
             <span>{isSimulating ? 'Tracing ReflexLoop...' : 'Simulate Loop Execution'}</span>
           </button>
+
+          {/* Fullscreen Toggle Button */}
+          <button
+            onClick={() => setIsFullscreen(!isFullscreen)}
+            style={{
+              background: isFullscreen ? 'rgba(56, 189, 248, 0.25)' : 'rgba(30, 41, 59, 0.8)',
+              border: isFullscreen ? '1px solid #38bdf8' : '1px solid var(--border-subtle)',
+              color: isFullscreen ? '#38bdf8' : 'var(--text-primary)',
+              borderRadius: '6px',
+              padding: '6px 12px',
+              fontSize: '11px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              marginLeft: '4px',
+              transition: 'all 0.15s ease',
+            }}
+            title={isFullscreen ? 'Exit Full Screen (ESC)' : 'Open Full Screen Workspace'}
+          >
+            {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+            <span>{isFullscreen ? 'Exit Fullscreen' : 'Full Screen'}</span>
+          </button>
         </div>
       </div>
 
       {/* Domain Summary Bar */}
       <div style={{
-        background: 'rgba(3, 7, 18, 0.6)',
+        background: 'rgba(3, 7, 18, 0.75)',
         borderBottom: '1px solid var(--border-subtle)',
         padding: '8px 20px',
         display: 'flex',
@@ -204,6 +272,7 @@ export function ReflexFlowCanvas() {
         color: 'var(--text-dim)',
         flexWrap: 'wrap',
         gap: '8px',
+        flexShrink: 0,
       }}>
         <div>
           <strong style={{ color: domainConfig.color }}>{domainConfig.name}:</strong> {domainConfig.description}
@@ -213,8 +282,8 @@ export function ReflexFlowCanvas() {
         </div>
       </div>
 
-      {/* React Flow Canvas - Enlarged Expansive Workspace */}
-      <div style={{ height: '680px', width: '100%', position: 'relative', background: '#050811' }}>
+      {/* React Flow Canvas - Expansive Full Screen Area */}
+      <div style={{ flex: 1, width: '100%', position: 'relative', background: '#050811', minHeight: '550px' }}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -224,9 +293,9 @@ export function ReflexFlowCanvas() {
           onNodeClick={onNodeClick}
           nodeTypes={customNodeTypes}
           fitView
-          fitViewOptions={{ padding: 0.2 }}
-          minZoom={0.25}
-          maxZoom={1.6}
+          fitViewOptions={{ padding: 0.25 }}
+          minZoom={0.2}
+          maxZoom={1.8}
         >
           <Background color="#1e293b" gap={24} size={1.2} />
           <Controls style={{ background: '#0f172a', border: '1px solid var(--border-subtle)', fill: '#94a3b8', borderRadius: '8px' }} />

@@ -233,29 +233,19 @@ export default function OpsGuardDashboard() {
 
       {/* Main Content Area - Uncrowded Tab Views */}
       <main style={{ maxWidth: '1440px', margin: '0 auto', padding: '24px 28px 48px 28px', width: '100%', flex: 1, position: 'relative', zIndex: 1 }}>
-        {/* VIEW 1: ReflexFlow Pipeline Canvas (Enlarged n8n / Hivvy style) */}
+        {/* VIEW 1: ReflexFlow Pipeline Canvas (Full Screen & Expansive n8n / Hivvy style) */}
         {activeTab === 'pipeline' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {/* Collapsible / Sleek Hero Bar */}
-            <FuturisticHero
-              systemStatus={systemStatus}
-              metrics={metrics}
-              onLaunchDemo={() => setActiveTab('sandbox')}
-              onRunBatch={handleRunBatch}
-              isRunningBatch={isRunningBatch}
-            />
-
-            {/* Interactive ReflexLoop Highway */}
-            <InteractiveReflexLoop />
-
-            {/* n8n / Hivvy Flow Style Interactive Automation Loop Canvas (Enlarged 680px) */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {/* n8n / Hivvy Flow Style Interactive Automation Loop Canvas with Fullscreen Button */}
             <ReflexFlowCanvas />
 
-            {/* Live Scenario Fast-Triggers */}
+            {/* Live Scenario Fast-Triggers & Interactive ReflexLoop Highway */}
             <ScenarioBar
               onRunScenario={handleRunScenario}
               activeScenarioLoading={activeScenarioLoading}
             />
+
+            <InteractiveReflexLoop />
           </div>
         )}
 
