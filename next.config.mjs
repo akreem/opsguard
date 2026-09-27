@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  output: 'standalone',
   // Ensure CORS headers can be set or handled cleanly
   async headers() {
     return [

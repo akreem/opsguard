@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # ===================================================
+  # 1. OpsGuard Real-Time Gateway & Mission Control
+  # ===================================================
+  opsguard-core:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: opsguard-control-plane
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DEMO_MODE=true
+      - SANDBOX_ISOLATION_MODE=DOCKER_CONTAINER_ISOLATED
+      # Optional external providers:
+      - TYPESAFE_API_KEY=${TYPESAFE_API_KEY:-}
+      - NVIDIA_API_KEY=${NVIDIA_API_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+    volumes:
+      - opsguard-data:/app/data
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:3000/api/system/status']
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - opsguard-network
+
+  # ===================================================
+  # 2. OpsGuard Isolated Replay Lab Sandbox Worker
+  # ===================================================
+  opsguard-sandbox:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: opsguard-replay-sandbox
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - SANDBOX_RUNNER=true
+      - ISOLATION_LEVEL=STRICT_READONLY_PROD
+    volumes:
+      - opsguard-data:/app/data:ro # Read-only mount guarantees zero production DB mutation
+    networks:
+      - opsguard-network
+    depends_on:
+      - opsguard-core
+
+volumes:
+  opsguard-data:
+    driver: local
+
+networks:
+  opsguard-network:
+    driver: bridge
