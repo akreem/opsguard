@@ -15,6 +15,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Ensure public dir exists
+RUN mkdir -p /app/public
+
 # Environment variables for build time
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
@@ -38,8 +41,8 @@ ENV SANDBOX_ISOLATION_MODE="DOCKER_CONTAINER_ISOLATED"
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-# Create data directory with appropriate permissions
-RUN mkdir -p /app/data && chown -R nextjs:nodejs /app/data
+# Create data & public directory with appropriate permissions
+RUN mkdir -p /app/data /app/public && chown -R nextjs:nodejs /app/data /app/public
 
 # Copy built artifacts from builder stage
 COPY --from=builder /app/public ./public
