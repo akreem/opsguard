@@ -213,8 +213,8 @@ export function ReflexFlowCanvas() {
         </div>
       </div>
 
-      {/* React Flow Canvas */}
-      <div style={{ height: '440px', width: '100%', position: 'relative', background: '#070b14' }}>
+      {/* React Flow Canvas - Enlarged Expansive Workspace */}
+      <div style={{ height: '680px', width: '100%', position: 'relative', background: '#050811' }}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -224,12 +224,12 @@ export function ReflexFlowCanvas() {
           onNodeClick={onNodeClick}
           nodeTypes={customNodeTypes}
           fitView
-          fitViewOptions={{ padding: 0.15 }}
-          minZoom={0.3}
-          maxZoom={1.5}
+          fitViewOptions={{ padding: 0.2 }}
+          minZoom={0.25}
+          maxZoom={1.6}
         >
-          <Background color="#1e293b" gap={20} size={1} />
-          <Controls style={{ background: '#0f172a', border: '1px solid var(--border-subtle)', fill: '#94a3b8' }} />
+          <Background color="#1e293b" gap={24} size={1.2} />
+          <Controls style={{ background: '#0f172a', border: '1px solid var(--border-subtle)', fill: '#94a3b8', borderRadius: '8px' }} />
           <MiniMap
             nodeColor={n => {
               if (n.type === 'agentNode') return '#38bdf8';
@@ -244,7 +244,7 @@ export function ReflexFlowCanvas() {
               if (n.type === 'replayNode') return '#fbbf24';
               return '#10b981';
             }}
-            style={{ background: 'rgba(15, 23, 42, 0.85)', border: '1px solid var(--border-subtle)', borderRadius: '8px' }}
+            style={{ background: 'rgba(15, 23, 42, 0.9)', border: '1px solid var(--border-subtle)', borderRadius: '10px' }}
           />
         </ReactFlow>
 
@@ -252,36 +252,49 @@ export function ReflexFlowCanvas() {
         {selectedNode && (
           <div style={{
             position: 'absolute',
-            top: '16px',
-            right: '16px',
-            width: '280px',
-            background: 'rgba(15, 23, 42, 0.95)',
+            top: '20px',
+            right: '20px',
+            width: '320px',
+            background: 'rgba(15, 23, 42, 0.96)',
             border: '1px solid rgba(56, 189, 248, 0.4)',
-            borderRadius: '10px',
-            padding: '14px',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.7)',
-            backdropFilter: 'blur(12px)',
+            borderRadius: '12px',
+            padding: '18px',
+            boxShadow: '0 12px 35px rgba(0,0,0,0.8)',
+            backdropFilter: 'blur(16px)',
             zIndex: 10,
+            animation: 'fadeIn 0.2s ease',
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-              <span className="badge-neon badge-cyan" style={{ fontSize: '9px' }}>
-                {selectedNode.data.category}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+              <span className="badge-neon badge-cyan" style={{ fontSize: '10px' }}>
+                {selectedNode.data.category || 'PIPELINE STAGE'}
               </span>
               <button
                 onClick={() => setSelectedNode(null)}
-                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '13px' }}
+                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '15px' }}
               >
                 ✕
               </button>
             </div>
-            <h4 style={{ fontSize: '13px', fontWeight: 800, color: '#ffffff', marginBottom: '4px' }}>
+            <h4 style={{ fontSize: '15px', fontWeight: 800, color: '#ffffff', marginBottom: '6px' }}>
               {selectedNode.data.label}
             </h4>
-            <p style={{ fontSize: '11px', color: 'var(--text-dim)', lineHeight: '1.4', marginBottom: '8px' }}>
+            <p style={{ fontSize: '12px', color: 'var(--text-dim)', lineHeight: '1.45', marginBottom: '12px' }}>
               {selectedNode.data.description}
             </p>
-            <div style={{ fontSize: '10px', color: '#38bdf8', background: 'rgba(56, 189, 248, 0.1)', padding: '6px 8px', borderRadius: '4px' }}>
-              Node ID: <code>{selectedNode.id}</code> • Status: <strong>READY</strong>
+            <div style={{
+              fontSize: '11px',
+              color: '#38bdf8',
+              background: 'rgba(56, 189, 248, 0.1)',
+              border: '1px solid rgba(56, 189, 248, 0.2)',
+              padding: '8px 10px',
+              borderRadius: '6px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4px',
+            }}>
+              <div><strong>Node ID:</strong> <code>{selectedNode.id}</code></div>
+              <div><strong>State:</strong> <span style={{ color: '#34d399', fontWeight: 700 }}>ACTIVE_ISOLATED</span></div>
+              <div><strong>Latency Budget:</strong> &lt; 250ms</div>
             </div>
           </div>
         )}

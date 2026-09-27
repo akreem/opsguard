@@ -17,6 +17,10 @@ services:
       - PORT=3000
       - DEMO_MODE=true
       - SANDBOX_ISOLATION_MODE=DOCKER_CONTAINER_ISOLATED
+      # Agent Router Configuration
+      - AGENTROUTER_API_KEY=${AGENTROUTER_API_KEY:-sk-qqWLC6HGwqL8UW1GJOU1RawlG1DHr8cgr46a4F36NJ7JHvDz}
+      - AGENTROUTER_BASE_URL=${AGENTROUTER_BASE_URL:-https://agentrouter.org/v1}
+      - AGENTROUTER_MODEL=${AGENTROUTER_MODEL:-deepseek-v4-flash}
       # Optional external providers:
       - TYPESAFE_API_KEY=${TYPESAFE_API_KEY:-}
       - NVIDIA_API_KEY=${NVIDIA_API_KEY:-}
@@ -46,6 +50,9 @@ services:
       - PORT=3001
       - SANDBOX_RUNNER=true
       - ISOLATION_LEVEL=STRICT_READONLY_PROD
+      - AGENTROUTER_API_KEY=${AGENTROUTER_API_KEY:-sk-qqWLC6HGwqL8UW1GJOU1RawlG1DHr8cgr46a4F36NJ7JHvDz}
+      - AGENTROUTER_BASE_URL=${AGENTROUTER_BASE_URL:-https://agentrouter.org/v1}
+      - AGENTROUTER_MODEL=${AGENTROUTER_MODEL:-deepseek-v4-flash}
     volumes:
       - opsguard-data:/app/data:ro # Read-only mount guarantees zero production DB mutation
     networks:

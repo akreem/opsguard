@@ -1,12 +1,16 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Header } from '@/components/Header';
+import { Header, DashboardNavTab } from '@/components/Header';
 import { FuturisticHero } from '@/components/FuturisticHero';
 import { InteractiveReflexLoop } from '@/components/InteractiveReflexLoop';
 import { ReflexFlowCanvas } from '@/components/flow/ReflexFlowCanvas';
+import { AgentSimulatorView } from '@/components/AgentSimulatorView';
+import { FlightRecorderView } from '@/components/FlightRecorderView';
+import { IncidentsView } from '@/components/IncidentsView';
+import { ApprovalsView } from '@/components/ApprovalsView';
+import { HealthOverview } from '@/components/HealthOverview';
 import { ScenarioBar } from '@/components/ScenarioBar';
-import { LiveConsoleHUD } from '@/components/LiveConsoleHUD';
 import { TraceDetailDrawer } from '@/components/TraceDetailDrawer';
 import { ReplayLabModal } from '@/components/ReplayLabModal';
 import { ApiDocsModal } from '@/components/ApiDocsModal';
@@ -20,6 +24,7 @@ import {
 } from '@/lib/types';
 
 export default function OpsGuardDashboard() {
+  const [activeTab, setActiveTab] = useState<DashboardNavTab>('pipeline');
   const [systemStatus, setSystemStatus] = useState<SystemStatus | null>(null);
   const [metrics, setMetrics] = useState<HealthMetrics | null>(null);
   const [traces, setTraces] = useState<FlightTrace[]>([]);
@@ -35,8 +40,6 @@ export default function OpsGuardDashboard() {
   const [isRunningBatch, setIsRunningBatch] = useState(false);
   const [activeScenarioLoading, setActiveScenarioLoading] = useState<string | null>(null);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
-
-  const consoleRef = useRef<HTMLDivElement>(null);
 
   const showNotification = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
     setNotification({ message, type });
@@ -185,20 +188,22 @@ export default function OpsGuardDashboard() {
     }
   };
 
-  const scrollToConsole = () => {
-    if (consoleRef.current) {
-      consoleRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  const pendingApprovalsCount = approvals.filter(a => a.status === 'PENDING').length;
+  const openIncidentsCount = incidents.filter(i => i.status !== 'RESOLVED' && i.status !== 'FIX_APPROVED').length;
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative' }}>
       {/* Cyber Grid Background Overlay */}
       <div className="cyber-grid" />
 
-      {/* Top Header */}
+      {/* Top Header & Sticky Navigation Bar */}
       <Header
         systemStatus={systemStatus}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        pendingApprovalsCount={pendingApprovalsCount}
+        openIncidentsCount={openIncidentsCount}
+        tracesCount={traces.length}
         onReset={handleReset}
         onRunBatch={handleRunBatch}
         onOpenDocs={() => setShowDocsModal(true)}
@@ -226,42 +231,135 @@ export default function OpsGuardDashboard() {
         </div>
       )}
 
-      {/* Main Content Area */}
-      <main style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 28px 48px 28px', width: '100%', flex: 1, position: 'relative', zIndex: 1 }}>
-        {/* Futuristic Hero Section */}
-        <FuturisticHero
-          systemStatus={systemStatus}
-          metrics={metrics}
-          onLaunchDemo={scrollToConsole}
-          onRunBatch={handleRunBatch}
-          isRunningBatch={isRunningBatch}
-        />
+      {/* Main Content Area - Uncrowded Tab Views */}
+      <main style={{ maxWidth: '1440px', margin: '0 auto', padding: '24px 28px 48px 28px', width: '100%', flex: 1, position: 'relative', zIndex: 1 }}>
+        {/* VIEW 1: ReflexFlow Pipeline Canvas (Enlarged n8n / Hivvy style) */}
+        {activeTab === 'pipeline' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {/* Collapsible / Sleek Hero Bar */}
+            <FuturisticHero
+              systemStatus={systemStatus}
+              metrics={metrics}
+              onLaunchDemo={() => setActiveTab('sandbox')}
+              onRunBatch={handleRunBatch}
+              isRunningBatch={isRunningBatch}
+            />
 
-        {/* Interactive ReflexLoop Highway */}
-        <InteractiveReflexLoop />
+            {/* Interactive ReflexLoop Highway */}
+            <InteractiveReflexLoop />
 
-        {/* n8n / Hivvy Flow Style Interactive Automation Loop Canvas */}
-        <ReflexFlowCanvas />
+            {/* n8n / Hivvy Flow Style Interactive Automation Loop Canvas (Enlarged 680px) */}
+            <ReflexFlowCanvas />
 
-        {/* Live Scenario Fast-Triggers */}
-        <ScenarioBar
-          onRunScenario={handleRunScenario}
-          activeScenarioLoading={activeScenarioLoading}
-        />
+            {/* Live Scenario Fast-Triggers */}
+            <ScenarioBar
+              onRunScenario={handleRunScenario}
+              activeScenarioLoading={activeScenarioLoading}
+            />
+          </div>
+        )}
 
-        {/* Mission Control Live Console HUD */}
-        <div ref={consoleRef} style={{ scrollMarginTop: '90px' }}>
-          <LiveConsoleHUD
-            traces={traces}
-            incidents={incidents}
-            approvals={approvals}
-            metrics={metrics}
-            onSelectTrace={tr => setSelectedTrace(tr)}
-            onOpenReplay={cl => setSelectedClusterForReplay(cl)}
-            onApprovalDecision={handleApprovalDecision}
-            onOpenDocs={() => setShowDocsModal(true)}
+        {/* VIEW 2: Real Agent & Database Sandbox Simulator */}
+        {activeTab === 'sandbox' && (
+          <AgentSimulatorView
+            onRefreshGlobalData={refreshData}
+            onOpenTrace={trId => {
+              const tr = traces.find(t => t.traceId === trId);
+              if (tr) setSelectedTrace(tr);
+            }}
           />
-        </div>
+        )}
+
+        {/* VIEW 3: Flight Recorder & Real-Time Traces */}
+        {activeTab === 'traces' && (
+          <div className="cyber-panel" style={{ padding: '24px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
+              <div>
+                <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#ffffff' }}>
+                  Flight Recorder Telemetry Ledger
+                </h3>
+                <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                  Structured, immutable trace records for every operational agent decision across Checks A, B, C, D and Postflight Verification.
+                </p>
+              </div>
+              <span className="badge-neon badge-cyan" style={{ fontSize: '11px' }}>
+                {traces.length} RECORDED TRACES
+              </span>
+            </div>
+            <FlightRecorderView
+              traces={traces}
+              onSelectTrace={tr => setSelectedTrace(tr)}
+            />
+          </div>
+        )}
+
+        {/* VIEW 4: Incidents, Blast Radius & Replay Lab */}
+        {activeTab === 'incidents' && (
+          <div className="cyber-panel" style={{ padding: '24px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
+              <div>
+                <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#ffffff' }}>
+                  Incident Memory & Failure Clusters
+                </h3>
+                <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                  Clustered failure patterns, blast radius quantification (47,830 TND, 17 orders), and Agent Router root cause diagnosis.
+                </p>
+              </div>
+              <span className="badge-neon badge-pink" style={{ fontSize: '11px' }}>
+                {incidents.length} FAILURE CLUSTERS
+              </span>
+            </div>
+            <IncidentsView
+              incidents={incidents}
+              onOpenReplay={cl => setSelectedClusterForReplay(cl)}
+            />
+          </div>
+        )}
+
+        {/* VIEW 5: Human Approvals Queue */}
+        {activeTab === 'approvals' && (
+          <div className="cyber-panel" style={{ padding: '24px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
+              <div>
+                <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#ffffff' }}>
+                  Human Review & Operator Sign-off Queue
+                </h3>
+                <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                  High-risk and anomalous operations requiring explicit human authorization with cryptographic audit trail.
+                </p>
+              </div>
+              <span className="badge badge-review" style={{ fontSize: '11px' }}>
+                {pendingApprovalsCount} PENDING AUTHORIZATION
+              </span>
+            </div>
+            <ApprovalsView
+              approvals={approvals}
+              onDecision={handleApprovalDecision}
+            />
+          </div>
+        )}
+
+        {/* VIEW 6: Reliability Health & Metrics */}
+        {activeTab === 'health' && (
+          <div className="cyber-panel" style={{ padding: '24px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
+              <div>
+                <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#ffffff' }}>
+                  Operational Reliability & Capital Protection
+                </h3>
+                <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                  Autonomous throughput rate, protected capital, guard interventions, and semantic verification telemetry.
+                </p>
+              </div>
+              <span className="badge-neon badge-cyan" style={{ fontSize: '11px' }}>
+                HEALTH SCORE: {metrics?.agentHealthScore ?? 94}/100
+              </span>
+            </div>
+            <HealthOverview
+              metrics={metrics}
+            />
+          </div>
+        )}
       </main>
 
       {/* Telemetry Trace Inspector Drawer */}
