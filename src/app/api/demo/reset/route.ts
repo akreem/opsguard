@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     await syncFailureClusters();
     return jsonResponse({
       success: true,
-      message: 'OpsGuard database reset to pristine hackathon demo state (~30 seeded procurement requests).',
+      message: 'AgentsGuard database reset to pristine hackathon demo state (~30 seeded procurement requests).',
       totalOperations: freshDb.operations.length,
       systemStatus: freshDb.systemStatus,
     });

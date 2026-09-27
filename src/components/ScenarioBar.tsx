@@ -39,8 +39,8 @@ const SCENARIOS = [
     badge: 'BLOCK',
     badgeClass: 'badge-block',
     icon: ShieldAlert,
-    color: '#f43f5e',
-    glowColor: 'rgba(244, 63, 94, 0.3)',
+    color: '#ef4444',
+    glowColor: 'rgba(239, 68, 68, 0.3)',
   },
   {
     id: '4',
@@ -50,8 +50,8 @@ const SCENARIOS = [
     badge: '17 CLUSTERED',
     badgeClass: 'badge-cyan',
     icon: Sparkles,
-    color: '#38bdf8',
-    glowColor: 'rgba(56, 189, 248, 0.3)',
+    color: '#2dd4bf',
+    glowColor: 'rgba(45, 212, 191, 0.3)',
   },
   {
     id: '5',
@@ -59,31 +59,31 @@ const SCENARIOS = [
     title: 'Replay Lab Fix Proof',
     desc: 'Sandbox replaying historical traces proving 0/17 ➔ 15/17 (88% recovery).',
     badge: '88% PROOF',
-    badgeClass: 'badge-allow',
+    badgeClass: 'badge-pink',
     icon: RotateCcw,
-    color: '#a855f7',
-    glowColor: 'rgba(168, 85, 247, 0.3)',
+    color: '#ff6080',
+    glowColor: 'rgba(255, 0, 114, 0.3)',
   },
 ];
 
 export function ScenarioBar({ onRunScenario, activeScenarioLoading }: ScenarioBarProps) {
   return (
-    <div style={{ marginBottom: '32px' }}>
+    <div style={{ marginBottom: '24px' }}>
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: '12px',
+        marginBottom: '10px',
         flexWrap: 'wrap',
         gap: '8px',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Zap size={16} color="#38bdf8" />
-          <h2 style={{ fontSize: '13px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-muted)' }}>
+          <Zap size={15} color="#ff0072" />
+          <h2 style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', color: '#71717a' }}>
             Live Interactive Scenario Triggers
           </h2>
         </div>
-        <span style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
+        <span style={{ fontSize: '11px', color: '#a1a1aa' }}>
           Click any scenario card to trigger immediate real-time ReflexLoop execution
         </span>
       </div>
@@ -91,7 +91,7 @@ export function ScenarioBar({ onRunScenario, activeScenarioLoading }: ScenarioBa
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
-        gap: '12px',
+        gap: '10px',
       }}>
         {SCENARIOS.map(sc => {
           const Icon = sc.icon;
@@ -104,18 +104,22 @@ export function ScenarioBar({ onRunScenario, activeScenarioLoading }: ScenarioBa
               disabled={isLoading}
               className="cyber-card"
               style={{
-                padding: '14px 16px',
+                background: '#18181b',
+                border: '1px solid #27272a',
+                borderRadius: '8px',
+                padding: '12px 14px',
                 textAlign: 'left',
                 cursor: 'pointer',
                 position: 'relative',
                 overflow: 'hidden',
+                transition: 'all 0.15s ease',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <span style={{ fontSize: '10px', fontWeight: 800, color: sc.color, letterSpacing: '0.5px' }}>
+                <span style={{ fontSize: '10px', fontWeight: 700, color: sc.color, letterSpacing: '0.4px' }}>
                   SCENARIO {sc.num}
                 </span>
-                <span className={`badge-neon ${sc.badgeClass}`} style={{ fontSize: '9px', padding: '2px 6px' }}>
+                <span className={`badge ${sc.badgeClass}`} style={{ fontSize: '9px', padding: '2px 6px' }}>
                   {sc.badge}
                 </span>
               </div>
@@ -125,20 +129,21 @@ export function ScenarioBar({ onRunScenario, activeScenarioLoading }: ScenarioBa
                   width: '24px',
                   height: '24px',
                   borderRadius: '6px',
-                  background: `${sc.color}20`,
+                  background: '#222226',
+                  border: '1px solid #27272a',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
                 }}>
-                  <Icon size={14} color={sc.color} />
+                  <Icon size={13} color={sc.color} />
                 </div>
-                <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-main)' }}>
+                <div style={{ fontSize: '12px', fontWeight: 700, color: '#ffffff' }}>
                   {isLoading ? 'Triggering...' : sc.title}
                 </div>
               </div>
 
-              <div style={{ fontSize: '11px', color: 'var(--text-dim)', lineHeight: '1.35' }}>
+              <div style={{ fontSize: '11px', color: '#a1a1aa', lineHeight: '1.35' }}>
                 {sc.desc}
               </div>
             </button>

@@ -30,7 +30,7 @@ const STEPS = [
     num: '02',
     label: 'Guard',
     icon: ShieldCheck,
-    color: '#06b6d4',
+    color: '#ff0072',
     summary: '4 Real-time Gateway Safety Checks (RBAC, Anomaly, Intent, Jev).',
     details: 'Check A (pure deterministic RBAC) + Check B (heuristic anomaly score 0-1.0) + Check C (intent consistency) + Check D (Jev risk judgment) feed into deterministic Policy Arbiter (ALLOW / REVIEW / BLOCK).',
   },
@@ -66,7 +66,7 @@ const STEPS = [
     num: '06',
     label: 'Learn',
     icon: BrainCircuit,
-    color: '#f472b6',
+    color: '#ff6080',
     summary: 'Failure Memory groups recurring fingerprints & blast radius.',
     details: 'Clusters recurring failures (e.g. Tech Supply vs TechSupply Corp alias drift across 17 orders totaling 47,830 TND) and runs generative root cause diagnosis.',
   },
@@ -77,7 +77,7 @@ const STEPS = [
     icon: RotateCcw,
     color: '#fbbf24',
     summary: 'Signature Sandbox Replay tests proposed patch on historical failures.',
-    details: 'Proves patch improvement before production deployment: 17 historical failures replayed in isolated sandbox (0/17 BEFORE $\rightarrow$ 15/17 AFTER = 88% recovery).',
+    details: 'Proves patch improvement before production deployment: 17 historical failures replayed in isolated sandbox (0/17 BEFORE ➔ 15/17 AFTER = 88% recovery).',
   },
   {
     key: 'APPROVE',
@@ -97,7 +97,7 @@ export function InteractiveReflexLoop() {
   const CurrentIcon = currentStep.icon;
 
   return (
-    <div className="cyber-panel" style={{ padding: '24px', marginBottom: '32px' }}>
+    <div className="cyber-panel" style={{ padding: '20px', marginBottom: '24px', background: '#18181b', border: '1px solid #27272a', borderRadius: '8px' }}>
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -107,12 +107,12 @@ export function InteractiveReflexLoop() {
         gap: '8px',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span className="badge-neon badge-cyan">ReflexLoop™ Architecture</span>
-          <h2 style={{ fontSize: '17px', fontWeight: 800 }}>
+          <span className="badge-pink">ReflexLoop™ Architecture</span>
+          <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#ffffff' }}>
             The 8-Stage Autonomous Reliability Highway
           </h2>
         </div>
-        <span style={{ fontSize: '12px', color: 'var(--text-dim)' }}>
+        <span style={{ fontSize: '11px', color: '#a1a1aa' }}>
           Click any step node below to inspect its inner control mechanisms
         </span>
       </div>
@@ -122,9 +122,9 @@ export function InteractiveReflexLoop() {
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
         gap: '8px',
-        marginBottom: '20px',
+        marginBottom: '16px',
       }}>
-        {STEPS.map((step, idx) => {
+        {STEPS.map(step => {
           const Icon = step.icon;
           const isSelected = activeStep === step.key;
 
@@ -133,38 +133,37 @@ export function InteractiveReflexLoop() {
               key={step.key}
               onClick={() => setActiveStep(step.key)}
               style={{
-                background: isSelected ? `${step.color}20` : 'rgba(15, 23, 42, 0.6)',
-                border: isSelected ? `2px solid ${step.color}` : '1px solid var(--border-subtle)',
-                borderRadius: '10px',
-                padding: '12px 10px',
+                background: isSelected ? '#222226' : '#18181b',
+                border: isSelected ? '1px solid #ff0072' : '1px solid #27272a',
+                borderRadius: '8px',
+                padding: '10px 10px',
                 textAlign: 'left',
                 cursor: 'pointer',
-                transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-                boxShadow: isSelected ? `0 0 20px ${step.color}35` : 'none',
-                transform: isSelected ? 'translateY(-2px)' : 'none',
+                transition: 'all 0.15s ease',
+                boxShadow: isSelected ? '0 1px 4px rgba(255, 0, 114, 0.2)' : 'none',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                <span style={{ fontSize: '10px', fontWeight: 800, color: step.color, opacity: 0.8 }}>
+                <span style={{ fontSize: '10px', fontWeight: 700, color: step.color }}>
                   {step.num}
                 </span>
                 <div style={{
-                  width: '24px',
-                  height: '24px',
-                  borderRadius: '6px',
-                  background: `${step.color}25`,
+                  width: '22px',
+                  height: '22px',
+                  borderRadius: '5px',
+                  background: '#27272a',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
-                  <Icon size={13} color={step.color} />
+                  <Icon size={12} color={step.color} />
                 </div>
               </div>
 
-              <div style={{ fontSize: '13px', fontWeight: 800, color: isSelected ? '#ffffff' : 'var(--text-main)', marginBottom: '2px' }}>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: isSelected ? '#ffffff' : '#f4f4f5', marginBottom: '2px' }}>
                 {step.label}
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: '1.2' }}>
+              <div style={{ fontSize: '10px', color: '#71717a', lineHeight: '1.2' }}>
                 {step.summary.split(' ')[0]} {step.summary.split(' ')[1]}
               </div>
             </button>
@@ -174,37 +173,37 @@ export function InteractiveReflexLoop() {
 
       {/* Expanded Step Deep Dive Callout */}
       <div style={{
-        background: 'rgba(3, 7, 18, 0.6)',
-        border: `1px solid ${currentStep.color}40`,
-        borderRadius: '12px',
-        padding: '16px 20px',
+        background: '#141416',
+        border: '1px solid #27272a',
+        borderRadius: '8px',
+        padding: '14px 18px',
         display: 'flex',
         alignItems: 'flex-start',
-        gap: '16px',
+        gap: '14px',
       }}>
         <div style={{
-          width: '40px',
-          height: '40px',
-          borderRadius: '10px',
-          background: `${currentStep.color}20`,
+          width: '36px',
+          height: '36px',
+          borderRadius: '8px',
+          background: '#18181b',
+          border: '1px solid #27272a',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           flexShrink: 0,
-          boxShadow: `0 0 16px ${currentStep.color}30`,
         }}>
-          <CurrentIcon size={20} color={currentStep.color} />
+          <CurrentIcon size={18} color={currentStep.color} />
         </div>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <span style={{ fontSize: '11px', fontWeight: 800, color: currentStep.color, textTransform: 'uppercase' }}>
+            <span style={{ fontSize: '11px', fontWeight: 700, color: currentStep.color, textTransform: 'uppercase' }}>
               Stage {currentStep.num} Execution Mechanics
             </span>
-            <span style={{ fontSize: '14px', fontWeight: 800, color: '#ffffff' }}>
+            <span style={{ fontSize: '13px', fontWeight: 700, color: '#ffffff' }}>
               — {currentStep.label}
             </span>
           </div>
-          <p style={{ fontSize: '13px', color: 'var(--text-dim)', lineHeight: '1.5' }}>
+          <p style={{ fontSize: '12px', color: '#a1a1aa', lineHeight: '1.5' }}>
             {currentStep.details}
           </p>
         </div>

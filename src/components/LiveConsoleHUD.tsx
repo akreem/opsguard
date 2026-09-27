@@ -222,7 +222,7 @@ export function LiveConsoleHUD({
                   </h3>
                 </div>
                 <p style={{ fontSize: '13px', color: 'var(--text-dim)', maxWidth: '640px', lineHeight: '1.4' }}>
-                  OpsGuard discovers recurring operational failure clusters, generates algorithmic patches, and simulates candidate fixes against exact historical failing traces before operator approval.
+                  AgentsGuard discovers recurring operational failure clusters, generates algorithmic patches, and simulates candidate fixes against exact historical failing traces before operator approval.
                 </p>
               </div>
 

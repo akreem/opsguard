@@ -44,17 +44,21 @@ export function ApiDocsModal({ onClose }: ApiDocsModalProps) {
           maxWidth: '850px',
           maxHeight: '90vh',
           overflowY: 'auto',
-          padding: '28px',
+          padding: '24px',
           position: 'relative',
+          background: '#18181b',
+          border: '1px solid #27272a',
+          borderRadius: '8px',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
         }}
         onClick={e => e.stopPropagation()}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Code2 size={22} color="#38bdf8" />
+            <Code2 size={20} color="#ff0072" />
             <div>
-              <h3 style={{ fontSize: '18px', fontWeight: 800 }}>OpsGuard REST API Contract</h3>
-              <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#ffffff' }}>AgentsGuard REST API Contract</h3>
+              <p style={{ fontSize: '12px', color: '#a1a1aa' }}>
                 CORS-enabled endpoints ready for Lovable frontend consumption.
               </p>
             </div>
@@ -62,27 +66,27 @@ export function ApiDocsModal({ onClose }: ApiDocsModalProps) {
           <button
             onClick={onClose}
             style={{
-              background: 'rgba(30, 41, 59, 0.6)',
-              border: '1px solid var(--border-color)',
-              color: 'var(--text-secondary)',
+              background: '#141416',
+              border: '1px solid #27272a',
+              color: '#a1a1aa',
               borderRadius: '6px',
               padding: '6px',
               cursor: 'pointer',
             }}
           >
-            <X size={16} />
+            <X size={15} />
           </button>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {ENDPOINTS.map((ep, idx) => {
             const isPost = ep.method === 'POST';
             return (
               <div
                 key={idx}
                 style={{
-                  background: 'rgba(30, 41, 59, 0.4)',
-                  border: '1px solid var(--border-color)',
+                  background: '#141416',
+                  border: '1px solid #27272a',
                   borderRadius: '6px',
                   padding: '10px 14px',
                   display: 'flex',
@@ -94,9 +98,9 @@ export function ApiDocsModal({ onClose }: ApiDocsModalProps) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <span
                     style={{
-                      background: isPost ? 'rgba(56, 189, 248, 0.2)' : 'rgba(16, 185, 129, 0.2)',
-                      color: isPost ? '#38bdf8' : '#34d399',
-                      border: `1px solid ${isPost ? 'rgba(56, 189, 248, 0.4)' : 'rgba(16, 185, 129, 0.4)'}`,
+                      background: isPost ? 'rgba(255, 0, 114, 0.12)' : 'rgba(16, 185, 129, 0.12)',
+                      color: isPost ? '#ff6080' : '#34d399',
+                      border: `1px solid ${isPost ? 'rgba(255, 0, 114, 0.3)' : 'rgba(16, 185, 129, 0.3)'}`,
                       padding: '2px 6px',
                       borderRadius: '4px',
                       fontSize: '10px',
@@ -108,10 +112,10 @@ export function ApiDocsModal({ onClose }: ApiDocsModalProps) {
                     {ep.method}
                   </span>
                   <div>
-                    <code style={{ fontSize: '12px', color: 'var(--text-primary)', fontWeight: 600 }}>
+                    <code style={{ fontSize: '12px', color: '#ffffff', fontWeight: 600 }}>
                       {ep.path}
                     </code>
-                    <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                    <div style={{ fontSize: '11px', color: '#a1a1aa', marginTop: '2px' }}>
                       {ep.desc}
                     </div>
                   </div>
@@ -122,7 +126,7 @@ export function ApiDocsModal({ onClose }: ApiDocsModalProps) {
                   style={{
                     background: 'none',
                     border: 'none',
-                    color: 'var(--text-muted)',
+                    color: '#71717a',
                     cursor: 'pointer',
                     padding: '4px',
                   }}

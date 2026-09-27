@@ -1,0 +1,14 @@
+{
+  "name": "opsguard-whatsapp-stream",
+  "version": "1.0.0",
+  "description": "AgentsGuard Live WhatsApp Operational Discussion & Dataflow Streamer",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

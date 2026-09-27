@@ -28,7 +28,7 @@ services:
     volumes:
       - opsguard-data:/app/data
     healthcheck:
-      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:3000/api/system/status']
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://127.0.0.1:3000/api/system/status']
       interval: 15s
       timeout: 5s
       retries: 3
@@ -50,11 +50,38 @@ services:
       - PORT=3001
       - SANDBOX_RUNNER=true
       - ISOLATION_LEVEL=STRICT_READONLY_PROD
-      - AGENTROUTER_API_KEY=${AGENTROUTER_API_KEY:-sk-qqWLC6HGwqL8UW1GJOU1RawlG1DHr8cgr46a4F36NJ7JHvDz}
+      - AGENTROUTER_API_KEY=${AGENTROUTER_API_KEY:-sk-9WIlHRrJAJSNXh3Lqb13aApU3XgVtl4sgiMAiNWDIpPoilGH}
       - AGENTROUTER_BASE_URL=${AGENTROUTER_BASE_URL:-https://agentrouter.org/v1}
       - AGENTROUTER_MODEL=${AGENTROUTER_MODEL:-deepseek-v4-flash}
     volumes:
       - opsguard-data:/app/data:ro # Read-only mount guarantees zero production DB mutation
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://127.0.0.1:3001/api/system/status']
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - opsguard-network
+    depends_on:
+      - opsguard-core
+
+  # ===================================================
+  # 3. OpsGuard Real-Time Live WhatsApp Discussion Streamer
+  # ===================================================
+  opsguard-whatsapp-stream:
+    build:
+      context: ./services/whatsapp-stream
+      dockerfile: Dockerfile
+    container_name: opsguard-whatsapp-stream
+    restart: unless-stopped
+    ports:
+      - '3002:3002'
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+      - OPSGUARD_CORE_URL=http://opsguard-core:3000
+      - STREAM_INTERVAL_MS=4500
     networks:
       - opsguard-network
     depends_on:

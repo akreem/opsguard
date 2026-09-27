@@ -7,6 +7,8 @@ import {
   HumanApprovalItem,
   ProposedPatch,
   SystemStatus,
+  User,
+  UserSession,
 } from './types';
 import { generateSeededRequests } from './seedData';
 
@@ -17,6 +19,8 @@ interface DatabaseSchema {
   approvals: HumanApprovalItem[];
   patches: ProposedPatch[];
   systemStatus: SystemStatus;
+  users: User[];
+  sessions: Record<string, UserSession>;
   version: number;
 }
 
@@ -44,6 +48,8 @@ function getInitialDatabase(): DatabaseSchema {
       version: '1.0.0-hackathon',
       activePatchesCount: 0,
     },
+    users: [],
+    sessions: {},
     version: 1,
   };
 }
@@ -54,18 +60,33 @@ function ensureDataDir(): void {
   }
 }
 
+let lastDbMtime = 0;
+
 function loadDatabase(): DatabaseSchema {
-  if (globalForDb.__opsguard_db) {
-    return globalForDb.__opsguard_db;
+  ensureDataDir();
+  let mtime = 0;
+  try {
+    if (fs.existsSync(DB_FILE)) {
+      mtime = fs.statSync(DB_FILE).mtimeMs;
+    }
+  } catch (e) {}
+
+  if (globalForDb.__opsguard_db && mtime === lastDbMtime && lastDbMtime > 0) {
+    if (!globalForDb.__opsguard_db.users) globalForDb.__opsguard_db.users = [];
+    if (!globalForDb.__opsguard_db.sessions) globalForDb.__opsguard_db.sessions = {};
+    return globalForDb.__opsguard_db as DatabaseSchema;
   }
 
-  ensureDataDir();
   if (fs.existsSync(DB_FILE)) {
     try {
       const content = fs.readFileSync(DB_FILE, 'utf-8');
-      globalForDb.__opsguard_db = JSON.parse(content);
-      if (globalForDb.__opsguard_db && Array.isArray(globalForDb.__opsguard_db.operations)) {
-        return globalForDb.__opsguard_db;
+      const parsed: DatabaseSchema = JSON.parse(content);
+      if (parsed && Array.isArray(parsed.operations)) {
+        if (!parsed.users) parsed.users = [];
+        if (!parsed.sessions) parsed.sessions = {};
+        globalForDb.__opsguard_db = parsed;
+        lastDbMtime = mtime;
+        return parsed;
       }
     } catch (err) {
       console.warn('Failed to parse database file, reinitializing', err);
@@ -74,7 +95,7 @@ function loadDatabase(): DatabaseSchema {
 
   globalForDb.__opsguard_db = getInitialDatabase();
   persistDatabase();
-  return globalForDb.__opsguard_db;
+  return globalForDb.__opsguard_db as DatabaseSchema;
 }
 
 function persistDatabase(): void {
@@ -82,6 +103,9 @@ function persistDatabase(): void {
   try {
     ensureDataDir();
     fs.writeFileSync(DB_FILE, JSON.stringify(globalForDb.__opsguard_db, null, 2), 'utf-8');
+    try {
+      lastDbMtime = fs.statSync(DB_FILE).mtimeMs;
+    } catch (e) {}
   } catch (err) {
     console.error('Failed to write to database file', err);
   }
@@ -282,5 +306,64 @@ export const db = {
     data.systemStatus = { ...data.systemStatus, ...update };
     persistDatabase();
     return data.systemStatus;
+  },
+
+  // Users & Authentication
+  getUsers(): User[] {
+    const data = loadDatabase();
+    return data.users;
+  },
+
+  getUserByEmail(email: string): User | undefined {
+    const data = loadDatabase();
+    return data.users.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
+  },
+
+  getUserById(id: string): User | undefined {
+    const data = loadDatabase();
+    return data.users.find(u => u.id === id);
+  },
+
+  saveUser(user: User): User {
+    const data = loadDatabase();
+    const idx = data.users.findIndex(u => u.id === user.id);
+    if (idx >= 0) {
+      data.users[idx] = user;
+    } else {
+      data.users.push(user);
+    }
+    persistDatabase();
+    return user;
+  },
+
+  saveSession(session: UserSession): void {
+    const data = loadDatabase();
+    data.sessions[session.token] = session;
+    persistDatabase();
+  },
+
+  getSession(token: string): UserSession | undefined {
+    let data = loadDatabase();
+    let session = data.sessions ? data.sessions[token] : undefined;
+    if (!session) {
+      lastDbMtime = 0; // force disk reload
+      data = loadDatabase();
+      session = data.sessions ? data.sessions[token] : undefined;
+    }
+    if (!session) return undefined;
+    if (session.expiresAt < Date.now()) {
+      delete data.sessions[token];
+      persistDatabase();
+      return undefined;
+    }
+    return session;
+  },
+
+  deleteSession(token: string): void {
+    const data = loadDatabase();
+    if (data.sessions[token]) {
+      delete data.sessions[token];
+      persistDatabase();
+    }
   },
 };

@@ -252,3 +252,24 @@ export interface SystemStatus {
   version: string;
   activePatchesCount: number;
 }
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: 'admin' | 'operator' | 'developer' | 'security';
+  passwordHash: string;
+  salt: string;
+  createdAt: string;
+  lastLoginAt?: string;
+}
+
+export interface UserSession {
+  token: string;
+  userId: string;
+  email: string;
+  name: string;
+  role: string;
+  expiresAt: number;
+}
+

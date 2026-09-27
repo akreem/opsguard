@@ -24,7 +24,7 @@ const AVAILABLE_AGENTS = [
   { id: 'procurement-agent-alpha', name: 'Procurement-Agent-Alpha', role: 'Autonomous Stock Restock Bot', icon: Bot, color: '#38bdf8' },
   { id: 'ledger-audit-bot', name: 'Ledger-Audit-Bot', role: 'ERP Financial Reconciliation Agent', icon: Server, color: '#818cf8' },
   { id: 'catalog-sync-agent', name: 'Catalog-Sync-Agent', role: 'SKU & Supplier Master Sync Bot', icon: Layers, color: '#34d399' },
-  { id: 'rogue-injected-bot', name: 'Adversarial-Shadow-Bot', role: 'Prompt Injected / Hijacked Agent', icon: AlertTriangle, color: '#f43f5e' },
+  { id: 'rogue-injected-bot', name: 'Adversarial-Shadow-Bot', role: 'Prompt Injected / Hijacked Agent', icon: AlertTriangle, color: '#ef4444' },
 ];
 
 const SIMULATION_SCENARIOS = [
@@ -33,7 +33,7 @@ const SIMULATION_SCENARIOS = [
     name: 'Supplier Alias Drift Error',
     badge: 'ENTITY RESOLUTION',
     badgeColor: 'badge-review',
-    desc: "Agent sends colloquial 'Tech Supply Ltd'. OpsGuard catches entity mismatch before ERP mutation.",
+    desc: "Agent sends colloquial 'Tech Supply Ltd'. AgentsGuard catches entity mismatch before ERP mutation.",
     expectedLayer: 'Postflight Semantic Verifier / Failure Memory',
     expectedDecision: 'FAIL_DETECTED ➔ CLUSTERED',
   },
@@ -69,7 +69,7 @@ const SIMULATION_SCENARIOS = [
     name: 'Legacy SKU Deprecation Drift',
     badge: 'CATALOG DRIFT',
     badgeColor: 'badge-cyan',
-    desc: "Agent queries deprecated SKU 'DL-MON-24'. OpsGuard detects drift and routes to Replay Lab.",
+    desc: "Agent queries deprecated SKU 'DL-MON-24'. AgentsGuard detects drift and routes to Replay Lab.",
     expectedLayer: 'Failure Memory / Replay Lab',
     expectedDecision: 'FAIL_DETECTED ➔ PATCHABLE',
   },
@@ -133,34 +133,34 @@ export function AgentSimulatorView({ onRefreshGlobalData, onOpenTrace }: AgentSi
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      {/* Top Banner */}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      {/* Top Banner - React Flow Pro Style */}
       <div style={{
-        background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.8))',
-        border: '1px solid rgba(56, 189, 248, 0.3)',
-        borderRadius: '14px',
-        padding: '22px 26px',
+        background: '#18181b',
+        border: '1px solid #27272a',
+        borderRadius: '8px',
+        padding: '20px 24px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
         gap: '16px',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)',
       }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-            <span className="badge-neon badge-cyan" style={{ fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <Bot size={13} /> REAL AGENT & DATABASE SANDBOX
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+            <span className="badge-pink" style={{ fontSize: '10px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <Bot size={12} /> REAL AGENT & DATABASE SANDBOX
             </span>
-            <span className="badge" style={{ fontSize: '11px', background: 'rgba(52, 211, 153, 0.15)', color: '#34d399', border: '1px solid rgba(52, 211, 153, 0.3)' }}>
+            <span className="badge-allow" style={{ fontSize: '10px' }}>
               LIVE ERROR DETECTION MATRIX
             </span>
           </div>
-          <h2 style={{ fontSize: '22px', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.5px' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.3px' }}>
             Simulate Autonomous Agents & Mock Databases
           </h2>
-          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', maxWidth: '780px' }}>
-            Test how OpsGuard intercepts real operational errors (supplier alias drift, silent ERP drops, prompt injection, and high financial anomalies) in real-time before database corruption.
+          <p style={{ fontSize: '12px', color: '#a1a1aa', maxWidth: '780px' }}>
+            Test how AgentsGuard intercepts real operational errors (supplier alias drift, silent ERP drops, prompt injection, and high financial anomalies) in real-time before database corruption.
           </p>
         </div>
 
@@ -168,23 +168,23 @@ export function AgentSimulatorView({ onRefreshGlobalData, onOpenTrace }: AgentSi
           onClick={handleExecuteSimulation}
           disabled={isRunning}
           className="btn-neon-primary"
-          style={{ padding: '10px 24px', fontSize: '14px' }}
+          style={{ padding: '8px 20px', fontSize: '13px' }}
         >
-          <Play size={16} />
+          <Play size={14} />
           <span>{isRunning ? 'Running Live Agent...' : 'Launch Agent Simulation'}</span>
         </button>
       </div>
 
       {/* Grid: 1. Agent & Scenario Configurator | 2. Live Terminal & DB Inspector */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 380px) 1fr', gap: '20px', alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 380px) 1fr', gap: '16px', alignItems: 'start' }}>
         {/* Left Column: Selectors */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Agent Picker */}
-          <div className="cyber-panel" style={{ padding: '18px' }}>
-            <h4 style={{ fontSize: '13px', fontWeight: 800, textTransform: 'uppercase', color: '#38bdf8', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Bot size={15} /> 1. Select Autonomous Agent
+          <div className="cyber-panel" style={{ padding: '16px', background: '#18181b', border: '1px solid #27272a', borderRadius: '8px' }}>
+            <h4 style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', color: '#ff6080', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Bot size={14} /> 1. Select Autonomous Agent
             </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {AVAILABLE_AGENTS.map(agent => {
                 const isSelected = selectedAgent.id === agent.id;
                 const Icon = agent.icon;
@@ -193,34 +193,34 @@ export function AgentSimulatorView({ onRefreshGlobalData, onOpenTrace }: AgentSi
                     key={agent.id}
                     onClick={() => setSelectedAgent(agent)}
                     style={{
-                      background: isSelected ? 'rgba(56, 189, 248, 0.15)' : 'rgba(15, 23, 42, 0.6)',
-                      border: isSelected ? '1px solid #38bdf8' : '1px solid var(--border-subtle)',
-                      borderRadius: '8px',
-                      padding: '10px 14px',
+                      background: isSelected ? '#222226' : '#18181b',
+                      border: isSelected ? '1px solid #ff0072' : '1px solid #27272a',
+                      borderRadius: '6px',
+                      padding: '8px 12px',
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '12px',
+                      gap: '10px',
                     }}
                   >
                     <div style={{
-                      width: '32px',
-                      height: '32px',
+                      width: '28px',
+                      height: '28px',
                       borderRadius: '6px',
-                      background: `${agent.color}20`,
+                      background: '#27272a',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       color: agent.color,
                     }}>
-                      <Icon size={16} />
+                      <Icon size={14} />
                     </div>
                     <div>
-                      <div style={{ fontSize: '12px', fontWeight: 800, color: isSelected ? '#ffffff' : 'var(--text-primary)' }}>
+                      <div style={{ fontSize: '12px', fontWeight: 700, color: isSelected ? '#ffffff' : '#f4f4f5' }}>
                         {agent.name}
                       </div>
-                      <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                      <div style={{ fontSize: '10px', color: '#71717a' }}>
                         {agent.role}
                       </div>
                     </div>
@@ -231,11 +231,11 @@ export function AgentSimulatorView({ onRefreshGlobalData, onOpenTrace }: AgentSi
           </div>
 
           {/* Scenario / Error Trigger Picker */}
-          <div className="cyber-panel" style={{ padding: '18px' }}>
-            <h4 style={{ fontSize: '13px', fontWeight: 800, textTransform: 'uppercase', color: '#38bdf8', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Zap size={15} /> 2. Select Error / Scenario to Test
+          <div className="cyber-panel" style={{ padding: '16px', background: '#18181b', border: '1px solid #27272a', borderRadius: '8px' }}>
+            <h4 style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', color: '#ff6080', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Zap size={14} /> 2. Select Error / Scenario to Test
             </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {SIMULATION_SCENARIOS.map(scenario => {
                 const isSelected = selectedScenario.id === scenario.id;
                 return (
@@ -243,26 +243,26 @@ export function AgentSimulatorView({ onRefreshGlobalData, onOpenTrace }: AgentSi
                     key={scenario.id}
                     onClick={() => setSelectedScenario(scenario)}
                     style={{
-                      background: isSelected ? 'rgba(99, 102, 241, 0.15)' : 'rgba(15, 23, 42, 0.6)',
-                      border: isSelected ? '1px solid #818cf8' : '1px solid var(--border-subtle)',
-                      borderRadius: '8px',
-                      padding: '10px 14px',
+                      background: isSelected ? '#222226' : '#18181b',
+                      border: isSelected ? '1px solid #ff0072' : '1px solid #27272a',
+                      borderRadius: '6px',
+                      padding: '8px 12px',
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-                      <span style={{ fontSize: '12px', fontWeight: 800, color: isSelected ? '#ffffff' : 'var(--text-primary)' }}>
+                      <span style={{ fontSize: '11px', fontWeight: 700, color: isSelected ? '#ffffff' : '#f4f4f5' }}>
                         {scenario.name}
                       </span>
-                      <span className={`badge ${scenario.badgeColor}`} style={{ fontSize: '8px' }}>
+                      <span className={`badge ${scenario.badgeColor}`} style={{ fontSize: '8px', padding: '1px 5px' }}>
                         {scenario.badge}
                       </span>
                     </div>
-                    <p style={{ fontSize: '10px', color: 'var(--text-dim)', lineHeight: '1.3', marginBottom: '6px' }}>
+                    <p style={{ fontSize: '10px', color: '#a1a1aa', lineHeight: '1.3', marginBottom: '4px' }}>
                       {scenario.desc}
                     </p>
-                    <div style={{ fontSize: '9px', color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <div style={{ fontSize: '9px', color: '#ff6080', display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <strong>Detection:</strong> {scenario.expectedLayer}
                     </div>
                   </div>
@@ -273,37 +273,34 @@ export function AgentSimulatorView({ onRefreshGlobalData, onOpenTrace }: AgentSi
         </div>
 
         {/* Right Column: Interactive Terminal & DB State Inspector */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Real-Time Detection Result Banner (if simulated) */}
           {simulationResult && (
             <div style={{
-              background: simulationResult.decision === 'BLOCK'
-                ? 'rgba(239, 68, 68, 0.12)'
-                : simulationResult.decision === 'HUMAN_REVIEW'
-                ? 'rgba(245, 158, 11, 0.12)'
-                : 'rgba(16, 185, 129, 0.12)',
-              border: `1px solid ${
+              background: '#18181b',
+              border: '1px solid #27272a',
+              borderLeft: `4px solid ${
                 simulationResult.decision === 'BLOCK'
-                  ? 'rgba(239, 68, 68, 0.4)'
+                  ? '#ef4444'
                   : simulationResult.decision === 'HUMAN_REVIEW'
-                  ? 'rgba(245, 158, 11, 0.4)'
-                  : 'rgba(16, 185, 129, 0.4)'
+                  ? '#f59e0b'
+                  : '#10b981'
               }`,
-              borderRadius: '12px',
-              padding: '18px 22px',
-              animation: 'fadeIn 0.3s ease',
+              borderRadius: '8px',
+              padding: '16px 20px',
+              animation: 'fadeIn 0.2s ease',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   {simulationResult.decision === 'BLOCK' ? (
-                    <XCircle size={20} color="#f87171" />
+                    <XCircle size={18} color="#f87171" />
                   ) : simulationResult.decision === 'HUMAN_REVIEW' ? (
-                    <AlertTriangle size={20} color="#fbbf24" />
+                    <AlertTriangle size={18} color="#fbbf24" />
                   ) : (
-                    <CheckCircle size={20} color="#34d399" />
+                    <CheckCircle size={18} color="#34d399" />
                   )}
-                  <span style={{ fontSize: '15px', fontWeight: 800, color: '#ffffff' }}>
-                    OpsGuard Interception: {simulationResult.decision}
+                  <span style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff' }}>
+                    AgentsGuard Interception: {simulationResult.decision}
                   </span>
                   <span className={`badge ${
                     simulationResult.decision === 'BLOCK' ? 'badge-block' : simulationResult.decision === 'HUMAN_REVIEW' ? 'badge-review' : 'badge-allow'
@@ -312,23 +309,23 @@ export function AgentSimulatorView({ onRefreshGlobalData, onOpenTrace }: AgentSi
                   </span>
                 </div>
 
-                <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                  Trace ID: <code style={{ color: '#38bdf8' }}>{simulationResult.trace.traceId}</code>
+                <span style={{ fontSize: '11px', color: '#71717a' }}>
+                  Trace ID: <code style={{ color: '#ff6080' }}>{simulationResult.trace.traceId}</code>
                 </span>
               </div>
 
-              <p style={{ fontSize: '12px', color: 'var(--text-primary)', marginBottom: '8px', lineHeight: '1.4' }}>
+              <p style={{ fontSize: '12px', color: '#f4f4f5', marginBottom: '6px', lineHeight: '1.4' }}>
                 <strong>Policy Reason:</strong> {simulationResult.decisionReason}
               </p>
 
               {simulationResult.errorDetail && (
                 <div style={{
-                  background: 'rgba(0, 0, 0, 0.4)',
+                  background: '#111113',
                   padding: '8px 12px',
                   borderRadius: '6px',
                   fontSize: '11px',
-                  color: '#fca5a5',
-                  borderLeft: '3px solid #ef4444',
+                  color: '#f87171',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
                 }}>
                   <strong>Simulated Error Caught:</strong> {simulationResult.errorDetail}
                 </div>
@@ -337,10 +334,10 @@ export function AgentSimulatorView({ onRefreshGlobalData, onOpenTrace }: AgentSi
           )}
 
           {/* Tab Navigation for Inspector */}
-          <div className="cyber-panel" style={{ padding: '0', overflow: 'hidden' }}>
+          <div className="cyber-panel" style={{ padding: '0', overflow: 'hidden', background: '#18181b', border: '1px solid #27272a', borderRadius: '8px' }}>
             <div style={{
-              background: 'rgba(15, 23, 42, 0.9)',
-              borderBottom: '1px solid var(--border-subtle)',
+              background: '#141416',
+              borderBottom: '1px solid #27272a',
               padding: '8px 16px',
               display: 'flex',
               alignItems: 'center',
@@ -348,81 +345,81 @@ export function AgentSimulatorView({ onRefreshGlobalData, onOpenTrace }: AgentSi
               flexWrap: 'wrap',
               gap: '8px',
             }}>
-              <div style={{ display: 'flex', gap: '6px' }}>
+              <div style={{ display: 'flex', gap: '4px' }}>
                 <button
                   onClick={() => setActiveTab('terminal')}
                   style={{
-                    background: activeTab === 'terminal' ? 'rgba(56, 189, 248, 0.2)' : 'transparent',
-                    color: activeTab === 'terminal' ? '#38bdf8' : 'var(--text-dim)',
-                    border: activeTab === 'terminal' ? '1px solid #38bdf8' : '1px solid transparent',
-                    padding: '6px 12px',
+                    background: activeTab === 'terminal' ? '#27272a' : 'transparent',
+                    color: activeTab === 'terminal' ? '#ffffff' : '#a1a1aa',
+                    border: activeTab === 'terminal' ? '1px solid #ff0072' : '1px solid transparent',
+                    padding: '5px 11px',
                     borderRadius: '6px',
                     fontSize: '11px',
-                    fontWeight: 700,
+                    fontWeight: 600,
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
                   }}
                 >
-                  <Terminal size={13} /> Live Execution Terminal
+                  <Terminal size={12} /> Live Execution Terminal
                 </button>
 
                 <button
                   onClick={() => setActiveTab('inventory')}
                   style={{
-                    background: activeTab === 'inventory' ? 'rgba(56, 189, 248, 0.2)' : 'transparent',
-                    color: activeTab === 'inventory' ? '#38bdf8' : 'var(--text-dim)',
-                    border: activeTab === 'inventory' ? '1px solid #38bdf8' : '1px solid transparent',
-                    padding: '6px 12px',
+                    background: activeTab === 'inventory' ? '#27272a' : 'transparent',
+                    color: activeTab === 'inventory' ? '#ffffff' : '#a1a1aa',
+                    border: activeTab === 'inventory' ? '1px solid #ff0072' : '1px solid transparent',
+                    padding: '5px 11px',
                     borderRadius: '6px',
                     fontSize: '11px',
-                    fontWeight: 700,
+                    fontWeight: 600,
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
                   }}
                 >
-                  <Database size={13} /> Inventory Master DB ({dbState?.inventory.length || 5})
+                  <Database size={12} /> Inventory Master DB ({dbState?.inventory.length || 5})
                 </button>
 
                 <button
                   onClick={() => setActiveTab('suppliers')}
                   style={{
-                    background: activeTab === 'suppliers' ? 'rgba(56, 189, 248, 0.2)' : 'transparent',
-                    color: activeTab === 'suppliers' ? '#38bdf8' : 'var(--text-dim)',
-                    border: activeTab === 'suppliers' ? '1px solid #38bdf8' : '1px solid transparent',
-                    padding: '6px 12px',
+                    background: activeTab === 'suppliers' ? '#27272a' : 'transparent',
+                    color: activeTab === 'suppliers' ? '#ffffff' : '#a1a1aa',
+                    border: activeTab === 'suppliers' ? '1px solid #ff0072' : '1px solid transparent',
+                    padding: '5px 11px',
                     borderRadius: '6px',
                     fontSize: '11px',
-                    fontWeight: 700,
+                    fontWeight: 600,
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
                   }}
                 >
-                  <Server size={13} /> Supplier Registry DB ({dbState?.suppliers.length || 3})
+                  <Server size={12} /> Supplier Registry DB ({dbState?.suppliers.length || 3})
                 </button>
 
                 <button
                   onClick={() => setActiveTab('erp')}
                   style={{
-                    background: activeTab === 'erp' ? 'rgba(56, 189, 248, 0.2)' : 'transparent',
-                    color: activeTab === 'erp' ? '#38bdf8' : 'var(--text-dim)',
-                    border: activeTab === 'erp' ? '1px solid #38bdf8' : '1px solid transparent',
-                    padding: '6px 12px',
+                    background: activeTab === 'erp' ? '#27272a' : 'transparent',
+                    color: activeTab === 'erp' ? '#ffffff' : '#a1a1aa',
+                    border: activeTab === 'erp' ? '1px solid #ff0072' : '1px solid transparent',
+                    padding: '5px 11px',
                     borderRadius: '6px',
                     fontSize: '11px',
-                    fontWeight: 700,
+                    fontWeight: 600,
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
                   }}
                 >
-                  <Layers size={13} /> ERP Ledger ({dbState?.erpLedger.length || 2})
+                  <Layers size={12} /> ERP Ledger ({dbState?.erpLedger.length || 2})
                 </button>
               </div>
 
@@ -435,7 +432,7 @@ export function AgentSimulatorView({ onRefreshGlobalData, onOpenTrace }: AgentSi
             {activeTab === 'terminal' && (
               <div style={{
                 padding: '16px',
-                background: '#070b14',
+                background: '#111113',
                 minHeight: '320px',
                 maxHeight: '420px',
                 overflowY: 'auto',
@@ -443,20 +440,15 @@ export function AgentSimulatorView({ onRefreshGlobalData, onOpenTrace }: AgentSi
                 fontSize: '11px',
               }}>
                 {simulationResult ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {simulationResult.executionLog.map((log, idx) => (
                       <div
                         key={idx}
                         style={{
-                          background: log.level === 'GUARD_INTERCEPT'
-                            ? 'rgba(239, 68, 68, 0.15)'
-                            : log.level === 'WARN'
-                            ? 'rgba(245, 158, 11, 0.15)'
-                            : log.level === 'SUCCESS'
-                            ? 'rgba(16, 185, 129, 0.15)'
-                            : 'rgba(30, 41, 59, 0.5)',
+                          background: '#18181b',
+                          border: '1px solid #27272a',
                           borderLeft: `3px solid ${
-                            log.level === 'GUARD_INTERCEPT' ? '#ef4444' : log.level === 'WARN' ? '#f59e0b' : log.level === 'SUCCESS' ? '#10b981' : '#38bdf8'
+                            log.level === 'GUARD_INTERCEPT' ? '#ef4444' : log.level === 'WARN' ? '#f59e0b' : log.level === 'SUCCESS' ? '#10b981' : '#ff0072'
                           }`,
                           padding: '8px 12px',
                           borderRadius: '4px',
@@ -464,17 +456,17 @@ export function AgentSimulatorView({ onRefreshGlobalData, onOpenTrace }: AgentSi
                       >
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
                           <strong style={{ color: '#ffffff' }}>{log.step}</strong>
-                          <span style={{ color: 'var(--text-muted)', fontSize: '10px' }}>{new Date(log.timestamp).toLocaleTimeString()}</span>
+                          <span style={{ color: '#71717a', fontSize: '10px' }}>{new Date(log.timestamp).toLocaleTimeString()}</span>
                         </div>
-                        <div style={{ color: 'var(--text-primary)' }}>{log.detail}</div>
+                        <div style={{ color: '#f4f4f5' }}>{log.detail}</div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '260px', color: 'var(--text-muted)', textAlign: 'center' }}>
-                    <Bot size={36} color="#38bdf8" style={{ marginBottom: '12px', opacity: 0.7 }} />
-                    <p style={{ fontSize: '13px', fontWeight: 600 }}>Ready to simulate real autonomous agent execution.</p>
-                    <p style={{ fontSize: '11px', maxWidth: '400px', marginTop: '4px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '260px', color: '#71717a', textAlign: 'center' }}>
+                    <Bot size={32} color="#ff0072" style={{ marginBottom: '10px', opacity: 0.8 }} />
+                    <p style={{ fontSize: '13px', fontWeight: 600, color: '#ffffff' }}>Ready to simulate real autonomous agent execution.</p>
+                    <p style={{ fontSize: '11px', maxWidth: '400px', marginTop: '4px', color: '#a1a1aa' }}>
                       Click <strong>Launch Agent Simulation</strong> above to execute <code>{selectedAgent.name}</code> against <code>{selectedScenario.name}</code> and observe live preflight & postflight interception.
                     </p>
                   </div>
@@ -484,10 +476,10 @@ export function AgentSimulatorView({ onRefreshGlobalData, onOpenTrace }: AgentSi
 
             {/* Tab 2: Inventory Master DB */}
             {activeTab === 'inventory' && (
-              <div style={{ padding: '16px', background: '#090d16', minHeight: '320px', overflowX: 'auto' }}>
+              <div style={{ padding: '16px', background: '#111113', minHeight: '320px', overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
                   <thead>
-                    <tr style={{ background: 'rgba(30, 41, 59, 0.8)', color: 'var(--text-secondary)', textAlign: 'left', borderBottom: '1px solid var(--border-subtle)' }}>
+                    <tr style={{ background: '#18181b', color: '#a1a1aa', textAlign: 'left', borderBottom: '1px solid #27272a' }}>
                       <th style={{ padding: '8px 10px' }}>SKU</th>
                       <th style={{ padding: '8px 10px' }}>Product Name</th>
                       <th style={{ padding: '8px 10px' }}>In Stock</th>
@@ -500,17 +492,17 @@ export function AgentSimulatorView({ onRefreshGlobalData, onOpenTrace }: AgentSi
                     {(dbState?.inventory || []).map((item, idx) => {
                       const isLowStock = item.stock <= item.minStock;
                       return (
-                        <tr key={idx} style={{ borderBottom: '1px solid rgba(51, 65, 85, 0.2)' }}>
-                          <td style={{ padding: '8px 10px', color: '#38bdf8', fontWeight: 700 }}>{item.sku}</td>
-                          <td style={{ padding: '8px 10px', color: 'var(--text-primary)' }}>{item.productName}</td>
-                          <td style={{ padding: '8px 10px', fontWeight: 800, color: isLowStock ? '#f87171' : '#34d399' }}>{item.stock} units</td>
-                          <td style={{ padding: '8px 10px', color: 'var(--text-muted)' }}>{item.minStock} units</td>
-                          <td style={{ padding: '8px 10px', color: 'var(--text-primary)' }}>{item.unitPriceTND} TND</td>
+                        <tr key={idx} style={{ borderBottom: '1px solid #27272a' }}>
+                          <td style={{ padding: '8px 10px', color: '#ff6080', fontWeight: 600 }}>{item.sku}</td>
+                          <td style={{ padding: '8px 10px', color: '#f4f4f5' }}>{item.productName}</td>
+                          <td style={{ padding: '8px 10px', fontWeight: 700, color: isLowStock ? '#f87171' : '#34d399' }}>{item.stock} units</td>
+                          <td style={{ padding: '8px 10px', color: '#71717a' }}>{item.minStock} units</td>
+                          <td style={{ padding: '8px 10px', color: '#f4f4f5' }}>{item.unitPriceTND} TND</td>
                           <td style={{ padding: '8px 10px' }}>
                             {isLowStock ? (
-                              <span className="badge badge-review" style={{ fontSize: '9px' }}>LOW STOCK ALERT</span>
+                              <span className="badge-review" style={{ fontSize: '9px' }}>LOW STOCK ALERT</span>
                             ) : (
-                              <span className="badge badge-allow" style={{ fontSize: '9px' }}>HEALTHY</span>
+                              <span className="badge-allow" style={{ fontSize: '9px' }}>HEALTHY</span>
                             )}
                           </td>
                         </tr>
@@ -523,10 +515,10 @@ export function AgentSimulatorView({ onRefreshGlobalData, onOpenTrace }: AgentSi
 
             {/* Tab 3: Supplier Registry DB */}
             {activeTab === 'suppliers' && (
-              <div style={{ padding: '16px', background: '#090d16', minHeight: '320px', overflowX: 'auto' }}>
+              <div style={{ padding: '16px', background: '#111113', minHeight: '320px', overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
                   <thead>
-                    <tr style={{ background: 'rgba(30, 41, 59, 0.8)', color: 'var(--text-secondary)', textAlign: 'left', borderBottom: '1px solid var(--border-subtle)' }}>
+                    <tr style={{ background: '#18181b', color: '#a1a1aa', textAlign: 'left', borderBottom: '1px solid #27272a' }}>
                       <th style={{ padding: '8px 10px' }}>Supplier ID</th>
                       <th style={{ padding: '8px 10px' }}>Canonical Vendor Name</th>
                       <th style={{ padding: '8px 10px' }}>Registered Aliases</th>
@@ -536,11 +528,11 @@ export function AgentSimulatorView({ onRefreshGlobalData, onOpenTrace }: AgentSi
                   </thead>
                   <tbody>
                     {(dbState?.suppliers || []).map((sup, idx) => (
-                      <tr key={idx} style={{ borderBottom: '1px solid rgba(51, 65, 85, 0.2)' }}>
-                        <td style={{ padding: '8px 10px', color: 'var(--text-muted)' }}>{sup.id}</td>
+                      <tr key={idx} style={{ borderBottom: '1px solid #27272a' }}>
+                        <td style={{ padding: '8px 10px', color: '#71717a' }}>{sup.id}</td>
                         <td style={{ padding: '8px 10px', fontWeight: 700, color: '#ffffff' }}>{sup.canonicalName}</td>
-                        <td style={{ padding: '8px 10px', color: '#38bdf8' }}>{sup.registeredAliases.join(', ')}</td>
-                        <td style={{ padding: '8px 10px', fontFamily: 'monospace', color: 'var(--text-secondary)' }}>{sup.verifiedPaymentIban}</td>
+                        <td style={{ padding: '8px 10px', color: '#ff6080' }}>{sup.registeredAliases.join(', ')}</td>
+                        <td style={{ padding: '8px 10px', fontFamily: 'monospace', color: '#a1a1aa' }}>{sup.verifiedPaymentIban}</td>
                         <td style={{ padding: '8px 10px' }}>
                           <span className={`badge ${sup.riskTier === 'LOW' ? 'badge-allow' : sup.riskTier === 'MEDIUM' ? 'badge-review' : 'badge-block'}`}>
                             {sup.riskTier} RISK
@@ -555,10 +547,10 @@ export function AgentSimulatorView({ onRefreshGlobalData, onOpenTrace }: AgentSi
 
             {/* Tab 4: ERP Ledger */}
             {activeTab === 'erp' && (
-              <div style={{ padding: '16px', background: '#090d16', minHeight: '320px', overflowX: 'auto' }}>
+              <div style={{ padding: '16px', background: '#111113', minHeight: '320px', overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
                   <thead>
-                    <tr style={{ background: 'rgba(30, 41, 59, 0.8)', color: 'var(--text-secondary)', textAlign: 'left', borderBottom: '1px solid var(--border-subtle)' }}>
+                    <tr style={{ background: '#18181b', color: '#a1a1aa', textAlign: 'left', borderBottom: '1px solid #27272a' }}>
                       <th style={{ padding: '8px 10px' }}>PO Number</th>
                       <th style={{ padding: '8px 10px' }}>SKU</th>
                       <th style={{ padding: '8px 10px' }}>Supplier</th>
@@ -569,11 +561,11 @@ export function AgentSimulatorView({ onRefreshGlobalData, onOpenTrace }: AgentSi
                   </thead>
                   <tbody>
                     {(dbState?.erpLedger || []).map((po, idx) => (
-                      <tr key={idx} style={{ borderBottom: '1px solid rgba(51, 65, 85, 0.2)' }}>
+                      <tr key={idx} style={{ borderBottom: '1px solid #27272a' }}>
                         <td style={{ padding: '8px 10px', fontWeight: 700, color: '#ffffff' }}>{po.poId}</td>
-                        <td style={{ padding: '8px 10px', color: '#38bdf8' }}>{po.sku}</td>
-                        <td style={{ padding: '8px 10px', color: 'var(--text-primary)' }}>{po.supplierId}</td>
-                        <td style={{ padding: '8px 10px', color: 'var(--text-secondary)' }}>{po.quantity}</td>
+                        <td style={{ padding: '8px 10px', color: '#ff6080' }}>{po.sku}</td>
+                        <td style={{ padding: '8px 10px', color: '#f4f4f5' }}>{po.supplierId}</td>
+                        <td style={{ padding: '8px 10px', color: '#a1a1aa' }}>{po.quantity}</td>
                         <td style={{ padding: '8px 10px', fontWeight: 700, color: '#34d399' }}>{po.amountTND.toLocaleString()} TND</td>
                         <td style={{ padding: '8px 10px' }}>
                           <span className={`badge ${

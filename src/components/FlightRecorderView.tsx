@@ -22,7 +22,7 @@ export function FlightRecorderView({ traces, onSelectTrace }: FlightRecorderView
   });
 
   return (
-    <div className="glass-panel" style={{ padding: '18px', height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div className="glass-panel" style={{ padding: '18px', height: '100%', display: 'flex', flexDirection: 'column', background: '#18181b', border: '1px solid #27272a', borderRadius: '8px' }}>
       {/* Header & Filter Controls */}
       <div style={{
         display: 'flex',
@@ -33,11 +33,11 @@ export function FlightRecorderView({ traces, onSelectTrace }: FlightRecorderView
         marginBottom: '14px',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Database size={18} color="#38bdf8" />
-          <h3 style={{ fontSize: '15px', fontWeight: 700 }}>
+          <Database size={16} color="#ff0072" />
+          <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff' }}>
             Flight Recorder Trace Feed
           </h3>
-          <span className="badge badge-neutral" style={{ fontSize: '11px' }}>
+          <span className="badge-neutral" style={{ fontSize: '11px' }}>
             {filteredTraces.length} Traces
           </span>
         </div>
@@ -49,13 +49,13 @@ export function FlightRecorderView({ traces, onSelectTrace }: FlightRecorderView
               key={f}
               onClick={() => setFilter(f)}
               style={{
-                background: filter === f ? 'var(--accent-blue)' : 'rgba(30, 41, 59, 0.6)',
-                color: filter === f ? '#0f172a' : 'var(--text-secondary)',
-                border: '1px solid var(--border-color)',
-                padding: '3px 9px',
-                borderRadius: '4px',
+                background: filter === f ? '#27272a' : '#18181b',
+                color: filter === f ? '#ffffff' : '#a1a1aa',
+                border: filter === f ? '1px solid #ff0072' : '1px solid #27272a',
+                padding: '4px 10px',
+                borderRadius: '6px',
                 fontSize: '11px',
-                fontWeight: 700,
+                fontWeight: 600,
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
               }}
@@ -71,22 +71,22 @@ export function FlightRecorderView({ traces, onSelectTrace }: FlightRecorderView
         flex: 1,
         overflowY: 'auto',
         maxHeight: '480px',
-        borderRadius: '8px',
-        border: '1px solid var(--border-color)',
-        background: 'rgba(9, 13, 22, 0.5)',
+        borderRadius: '6px',
+        border: '1px solid #27272a',
+        background: '#111113',
       }}>
         {filteredTraces.length === 0 ? (
-          <div style={{ padding: '32px', textAlign: 'center', color: 'var(--text-muted)' }}>
-            No flight traces recorded yet. Click a scenario button or 'Run All' above to generate execution traces.
+          <div style={{ padding: '32px', textAlign: 'center', color: '#71717a' }}>
+            No flight traces recorded yet. Click a scenario button or &apos;Run All&apos; above to generate execution traces.
           </div>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
             <thead>
               <tr style={{
-                background: 'rgba(30, 41, 59, 0.8)',
-                color: 'var(--text-secondary)',
+                background: '#18181b',
+                color: '#a1a1aa',
                 textAlign: 'left',
-                borderBottom: '1px solid var(--border-color)',
+                borderBottom: '1px solid #27272a',
                 position: 'sticky',
                 top: 0,
                 zIndex: 10,
@@ -112,11 +112,11 @@ export function FlightRecorderView({ traces, onSelectTrace }: FlightRecorderView
                     key={trace.traceId || idx}
                     onClick={() => onSelectTrace(trace)}
                     style={{
-                      borderBottom: '1px solid rgba(51, 65, 85, 0.3)',
+                      borderBottom: '1px solid #27272a',
                       cursor: 'pointer',
                       transition: 'background 0.15s ease',
                     }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(30, 41, 59, 0.5)'}
+                    onMouseEnter={e => e.currentTarget.style.background = '#1c1c20'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
                     {/* Decision Badge */}
@@ -127,12 +127,12 @@ export function FlightRecorderView({ traces, onSelectTrace }: FlightRecorderView
                     </td>
 
                     {/* Proposed Tool */}
-                    <td style={{ padding: '8px 12px', fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '8px 12px', fontWeight: 600, color: '#ff6080', whiteSpace: 'nowrap' }}>
                       <code>{trace.proposedTool}</code>
                     </td>
 
                     {/* Intent / Reason */}
-                    <td style={{ padding: '8px 12px', color: 'var(--text-secondary)', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '8px 12px', color: '#a1a1aa', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {trace.policyReason || trace.businessIntent}
                     </td>
 
@@ -158,7 +158,7 @@ export function FlightRecorderView({ traces, onSelectTrace }: FlightRecorderView
                     </td>
 
                     {/* Source */}
-                    <td style={{ padding: '8px 12px', color: 'var(--text-muted)', fontSize: '11px', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '8px 12px', color: '#71717a', fontSize: '11px', whiteSpace: 'nowrap' }}>
                       {trace.decisionSource}
                     </td>
 
@@ -169,7 +169,7 @@ export function FlightRecorderView({ traces, onSelectTrace }: FlightRecorderView
                         style={{
                           background: 'none',
                           border: 'none',
-                          color: 'var(--accent-blue)',
+                          color: '#ff6080',
                           cursor: 'pointer',
                           display: 'inline-flex',
                           alignItems: 'center',

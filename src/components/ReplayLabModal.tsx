@@ -60,29 +60,33 @@ export function ReplayLabModal({
           maxWidth: '920px',
           maxHeight: '92vh',
           overflowY: 'auto',
-          padding: '28px',
+          padding: '24px',
           position: 'relative',
+          background: '#18181b',
+          border: '1px solid #27272a',
+          borderRadius: '8px',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
         }}
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px', flexWrap: 'wrap' }}>
-              <span className="badge badge-cyan" style={{ fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span className="badge-pink" style={{ fontSize: '10px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <Cpu size={12} /> REPLAY LAB SANDBOX
               </span>
-              <span className="badge" style={{ fontSize: '11px', background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
+              <span className="badge-cyan" style={{ fontSize: '10px' }}>
                 AGENT ROUTER CONNECTED (sk-qqWL...vDz)
               </span>
-              <span className={`badge ${isApproved ? 'badge-allow' : 'badge-review'}`}>
+              <span className={`badge ${isApproved ? 'badge-allow' : 'badge-review'}`} style={{ fontSize: '10px' }}>
                 {isApproved ? 'FIX DEPLOYED' : 'EVALUATION PENDING'}
               </span>
             </div>
-            <h3 style={{ fontSize: '20px', fontWeight: 800 }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#ffffff' }}>
               Testing Proposed Patch: {cluster.proposedPatch?.name}
             </h3>
-            <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+            <p style={{ fontSize: '12px', color: '#a1a1aa' }}>
               Replaying exact historical failure traces against proposed policy patch in an isolated sandbox without mutating live state.
             </p>
           </div>
@@ -90,25 +94,25 @@ export function ReplayLabModal({
           <button
             onClick={onClose}
             style={{
-              background: 'rgba(30, 41, 59, 0.6)',
-              border: '1px solid var(--border-color)',
-              color: 'var(--text-secondary)',
+              background: '#141416',
+              border: '1px solid #27272a',
+              color: '#a1a1aa',
               borderRadius: '6px',
               padding: '6px',
               cursor: 'pointer',
             }}
           >
-            <X size={16} />
+            <X size={15} />
           </button>
         </div>
 
         {/* Model Selection & Sandbox Control Bar */}
         <div style={{
-          background: 'rgba(15, 23, 42, 0.85)',
-          border: '1px solid rgba(56, 189, 248, 0.25)',
-          borderRadius: '10px',
-          padding: '14px 18px',
-          marginBottom: '20px',
+          background: '#141416',
+          border: '1px solid #27272a',
+          borderRadius: '6px',
+          padding: '12px 16px',
+          marginBottom: '16px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -116,8 +120,8 @@ export function ReplayLabModal({
           gap: '12px',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '12px', fontWeight: 700, color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Sparkles size={14} /> Agent Router Model:
+            <span style={{ fontSize: '11px', fontWeight: 700, color: '#ff6080', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Sparkles size={13} /> Agent Router Model:
             </span>
             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
               {AVAILABLE_AGENTROUTER_MODELS.map(m => (
@@ -125,9 +129,9 @@ export function ReplayLabModal({
                   key={m.id}
                   onClick={() => setSelectedModel(m.id)}
                   style={{
-                    background: selectedModel === m.id ? 'rgba(56, 189, 248, 0.2)' : 'rgba(30, 41, 59, 0.5)',
-                    border: selectedModel === m.id ? '1px solid #38bdf8' : '1px solid var(--border-color)',
-                    color: selectedModel === m.id ? '#38bdf8' : 'var(--text-secondary)',
+                    background: selectedModel === m.id ? '#27272a' : '#18181b',
+                    border: selectedModel === m.id ? '1px solid #ff0072' : '1px solid #27272a',
+                    color: selectedModel === m.id ? '#ffffff' : '#a1a1aa',
                     borderRadius: '6px',
                     padding: '4px 10px',
                     fontSize: '11px',
@@ -141,7 +145,7 @@ export function ReplayLabModal({
                   title={m.desc}
                 >
                   <span>{m.name}</span>
-                  <span style={{ fontSize: '8px', opacity: 0.7, padding: '1px 4px', background: 'rgba(0,0,0,0.3)', borderRadius: '3px' }}>
+                  <span style={{ fontSize: '8px', opacity: 0.7, padding: '1px 4px', background: '#111113', borderRadius: '3px' }}>
                     {m.tag}
                   </span>
                 </button>
@@ -158,26 +162,26 @@ export function ReplayLabModal({
 
         {/* Root Cause & Proposed Patch Banner */}
         <div style={{
-          background: 'rgba(15, 23, 42, 0.7)',
-          border: '1px solid var(--border-color)',
-          borderRadius: '10px',
-          padding: '16px',
-          marginBottom: '20px',
+          background: '#141416',
+          border: '1px solid #27272a',
+          borderRadius: '6px',
+          padding: '14px',
+          marginBottom: '16px',
         }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
             <div>
               <div style={{ fontSize: '11px', fontWeight: 700, color: '#f87171', textTransform: 'uppercase', marginBottom: '4px' }}>
                 Diagnosed Root Cause
               </div>
-              <p style={{ fontSize: '12px', color: 'var(--text-primary)', lineHeight: '1.4' }}>
+              <p style={{ fontSize: '12px', color: '#f4f4f5', lineHeight: '1.4' }}>
                 {cluster.rootCauseDiagnosis?.root_cause}
               </p>
             </div>
             <div>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: '#38bdf8', textTransform: 'uppercase', marginBottom: '4px' }}>
+              <div style={{ fontSize: '11px', fontWeight: 700, color: '#ff6080', textTransform: 'uppercase', marginBottom: '4px' }}>
                 Proposed Algorithmic Patch
               </div>
-              <p style={{ fontSize: '12px', color: 'var(--text-primary)', lineHeight: '1.4' }}>
+              <p style={{ fontSize: '12px', color: '#f4f4f5', lineHeight: '1.4' }}>
                 {cluster.proposedPatch?.description}
               </p>
             </div>
@@ -186,18 +190,18 @@ export function ReplayLabModal({
 
         {/* Sandbox Replay Execution Banner */}
         <div style={{
-          background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9))',
-          border: '1px solid rgba(56, 189, 248, 0.3)',
-          borderRadius: '12px',
-          padding: '20px',
-          marginBottom: '20px',
+          background: '#141416',
+          border: '1px solid #27272a',
+          borderRadius: '8px',
+          padding: '18px',
+          marginBottom: '16px',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '12px' }}>
             <div>
-              <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <RotateCcw size={16} /> Historical Failure Sandbox Verification
+              <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <RotateCcw size={15} color="#ff0072" /> Historical Failure Sandbox Verification
               </h4>
-              <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+              <p style={{ fontSize: '11px', color: '#a1a1aa' }}>
                 Evaluates {totalCases} historical orders totaling {cluster.businessValueAffected.toLocaleString()} TND with {selectedModel}
               </p>
             </div>
@@ -206,62 +210,62 @@ export function ReplayLabModal({
               onClick={handleRunReplay}
               disabled={isReplaying}
               className="btn-primary"
-              style={{ padding: '8px 18px', fontSize: '13px' }}
+              style={{ padding: '7px 16px', fontSize: '12px' }}
             >
-              <Zap size={15} />
+              <Zap size={14} />
               <span>{isReplaying ? `Simulating with ${selectedModel}...` : `Run Sandbox Replay (${selectedModel})`}</span>
             </button>
           </div>
 
           {/* Before vs After Scorecards */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px', marginBottom: '16px' }}>
-            <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '14px', borderRadius: '8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: '#f87171', textTransform: 'uppercase' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '10px', marginBottom: '14px' }}>
+            <div style={{ background: '#18181b', border: '1px solid #27272a', borderTop: '3px solid #ef4444', padding: '12px', borderRadius: '6px', textAlign: 'center' }}>
+              <div style={{ fontSize: '10px', fontWeight: 700, color: '#f87171', textTransform: 'uppercase' }}>
                 BEFORE FIX
               </div>
-              <div style={{ fontSize: '26px', fontWeight: 900, color: '#f87171', margin: '4px 0' }}>
+              <div style={{ fontSize: '24px', fontWeight: 800, color: '#f87171', margin: '4px 0' }}>
                 {beforeSuccess} / {totalCases}
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>0% Historic Success</div>
+              <div style={{ fontSize: '10px', color: '#71717a' }}>0% Historic Success</div>
             </div>
 
-            <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '14px', borderRadius: '8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: '#34d399', textTransform: 'uppercase' }}>
+            <div style={{ background: '#18181b', border: '1px solid #27272a', borderTop: '3px solid #10b981', padding: '12px', borderRadius: '6px', textAlign: 'center' }}>
+              <div style={{ fontSize: '10px', fontWeight: 700, color: '#34d399', textTransform: 'uppercase' }}>
                 AFTER FIX
               </div>
-              <div style={{ fontSize: '26px', fontWeight: 900, color: '#34d399', margin: '4px 0' }}>
+              <div style={{ fontSize: '24px', fontWeight: 800, color: '#34d399', margin: '4px 0' }}>
                 {afterSuccess} / {totalCases}
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>88% Autonomous Resolution</div>
+              <div style={{ fontSize: '10px', color: '#71717a' }}>88% Autonomous Resolution</div>
             </div>
 
-            <div style={{ background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.3)', padding: '14px', borderRadius: '8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: '#38bdf8', textTransform: 'uppercase' }}>
+            <div style={{ background: '#18181b', border: '1px solid #27272a', borderTop: '3px solid #ff0072', padding: '12px', borderRadius: '6px', textAlign: 'center' }}>
+              <div style={{ fontSize: '10px', fontWeight: 700, color: '#ff6080', textTransform: 'uppercase' }}>
                 FAILURE REDUCTION
               </div>
-              <div style={{ fontSize: '26px', fontWeight: 900, color: '#38bdf8', margin: '4px 0' }}>
+              <div style={{ fontSize: '24px', fontWeight: 800, color: '#ff6080', margin: '4px 0' }}>
                 {reduction}%
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>15 Cases Recovered</div>
+              <div style={{ fontSize: '10px', color: '#71717a' }}>15 Cases Recovered</div>
             </div>
 
-            <div style={{ background: 'rgba(99, 102, 241, 0.1)', border: '1px solid rgba(99, 102, 241, 0.3)', padding: '14px', borderRadius: '8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: '#818cf8', textTransform: 'uppercase' }}>
+            <div style={{ background: '#18181b', border: '1px solid #27272a', borderTop: '3px solid #818cf8', padding: '12px', borderRadius: '6px', textAlign: 'center' }}>
+              <div style={{ fontSize: '10px', fontWeight: 700, color: '#818cf8', textTransform: 'uppercase' }}>
                 NEW REGRESSIONS
               </div>
-              <div style={{ fontSize: '26px', fontWeight: 900, color: '#818cf8', margin: '4px 0' }}>
+              <div style={{ fontSize: '24px', fontWeight: 800, color: '#818cf8', margin: '4px 0' }}>
                 0
               </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Zero Side Effects</div>
+              <div style={{ fontSize: '10px', color: '#71717a' }}>Zero Side Effects</div>
             </div>
           </div>
 
           {/* AI Sandbox Attestation Card */}
           <div style={{
-            background: 'rgba(15, 23, 42, 0.9)',
-            border: '1px solid rgba(52, 211, 153, 0.3)',
-            borderRadius: '8px',
-            padding: '12px 16px',
+            background: '#18181b',
+            border: '1px solid #27272a',
+            borderRadius: '6px',
+            padding: '12px 14px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -269,21 +273,21 @@ export function ReplayLabModal({
             gap: '10px',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <ShieldCheck size={18} color="#34d399" />
+              <ShieldCheck size={16} color="#34d399" />
               <div>
-                <div style={{ fontSize: '12px', fontWeight: 700, color: '#34d399' }}>
+                <div style={{ fontSize: '11px', fontWeight: 700, color: '#34d399' }}>
                   AI Sandbox Verification Attestation • Agent Router ({aiAudit?.model || selectedModel})
                 </div>
-                <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                <div style={{ fontSize: '11px', color: '#a1a1aa' }}>
                   {aiAudit?.executiveSummary || `Attestation verified: 15/17 cases recovered with 0 regressions and zero live DB state mutation.`}
                 </div>
               </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span className="badge badge-allow" style={{ fontSize: '10px' }}>
+              <span className="badge-allow" style={{ fontSize: '10px' }}>
                 SAFETY SCORE {aiAudit?.safetyScore || 99.4}%
               </span>
-              <span className="badge badge-cyan" style={{ fontSize: '10px' }}>
+              <span className="badge-cyan" style={{ fontSize: '10px' }}>
                 PROD SAFE
               </span>
             </div>
@@ -291,20 +295,20 @@ export function ReplayLabModal({
         </div>
 
         {/* Case by Case Diff Table */}
-        <h4 style={{ fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', color: 'var(--text-secondary)', marginBottom: '10px' }}>
+        <h4 style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.6px', color: '#71717a', marginBottom: '8px' }}>
           Historical Cases Verification Breakdown (17 Traces)
         </h4>
         <div style={{
-          maxHeight: '260px',
+          maxHeight: '240px',
           overflowY: 'auto',
-          borderRadius: '8px',
-          border: '1px solid var(--border-color)',
-          background: '#090d16',
-          marginBottom: '20px',
+          borderRadius: '6px',
+          border: '1px solid #27272a',
+          background: '#111113',
+          marginBottom: '18px',
         }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
             <thead>
-              <tr style={{ background: 'rgba(30, 41, 59, 0.8)', color: 'var(--text-secondary)', textAlign: 'left', borderBottom: '1px solid var(--border-color)' }}>
+              <tr style={{ background: '#18181b', color: '#a1a1aa', textAlign: 'left', borderBottom: '1px solid #27272a' }}>
                 <th style={{ padding: '6px 10px' }}>Trace ID</th>
                 <th style={{ padding: '6px 10px' }}>Raw Supplier Alias</th>
                 <th style={{ padding: '6px 10px' }}>Before Patch</th>
@@ -314,20 +318,20 @@ export function ReplayLabModal({
             </thead>
             <tbody>
               {(replayData?.details || []).map((row, idx) => (
-                <tr key={idx} style={{ borderBottom: '1px solid rgba(51, 65, 85, 0.2)' }}>
-                  <td style={{ padding: '6px 10px', color: 'var(--text-muted)' }}>{row.requestId}</td>
-                  <td style={{ padding: '6px 10px', fontWeight: 600, color: 'var(--text-primary)' }}>{row.supplier}</td>
+                <tr key={idx} style={{ borderBottom: '1px solid #27272a' }}>
+                  <td style={{ padding: '6px 10px', color: '#71717a' }}>{row.requestId}</td>
+                  <td style={{ padding: '6px 10px', fontWeight: 600, color: '#ffffff' }}>{row.supplier}</td>
                   <td style={{ padding: '6px 10px', color: '#f87171' }}>{row.beforeStatus}</td>
                   <td style={{ padding: '6px 10px', color: row.afterStatus === 'SUCCESS' ? '#34d399' : '#f87171', fontWeight: 600 }}>
                     {row.afterStatus}
                   </td>
                   <td style={{ padding: '6px 10px' }}>
                     {row.recovered ? (
-                      <span className="badge badge-allow" style={{ fontSize: '9px' }}>
+                      <span className="badge-allow" style={{ fontSize: '9px' }}>
                         RECOVERED (88%)
                       </span>
                     ) : (
-                      <span className="badge badge-neutral" style={{ fontSize: '9px' }}>
+                      <span className="badge-neutral" style={{ fontSize: '9px' }}>
                         UNRESOLVED 3RD PARTY
                       </span>
                     )}
@@ -343,19 +347,19 @@ export function ReplayLabModal({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          borderTop: '1px solid var(--border-color)',
-          paddingTop: '16px',
+          borderTop: '1px solid #27272a',
+          paddingTop: '14px',
           flexWrap: 'wrap',
           gap: '12px',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <ShieldCheck size={16} color="#10b981" />
-            <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-              Operator: <strong style={{ color: 'var(--text-primary)' }}>hackathon_operator</strong> • Policy Versioning Ready
+            <span style={{ fontSize: '11px', color: '#a1a1aa' }}>
+              Operator: <strong style={{ color: '#ffffff' }}>hackathon_operator</strong> • Policy Versioning Ready
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <button
               onClick={() => onRejectFix(cluster.clusterId)}
               className="btn-danger"
@@ -369,9 +373,9 @@ export function ReplayLabModal({
               onClick={() => onApproveFix(cluster.clusterId)}
               className="btn-success"
               disabled={isApproved}
-              style={{ padding: '8px 20px', fontSize: '13px' }}
+              style={{ padding: '7px 18px', fontSize: '12px' }}
             >
-              <CheckCircle size={15} />
+              <CheckCircle size={14} />
               <span>{isApproved ? 'Fix Approved & Deployed' : 'Approve & Deploy Fix (Human Sign-off)'}</span>
             </button>
           </div>

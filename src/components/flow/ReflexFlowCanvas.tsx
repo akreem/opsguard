@@ -138,7 +138,7 @@ export function ReflexFlowCanvas({ initialFullscreen = false }: ReflexFlowCanvas
               zIndex: 99999,
               width: '100vw',
               height: '100vh',
-              background: '#030712',
+              background: '#111111',
               display: 'flex',
               flexDirection: 'column',
             }
@@ -150,13 +150,16 @@ export function ReflexFlowCanvas({ initialFullscreen = false }: ReflexFlowCanvas
               flexDirection: 'column',
               height: 'calc(100vh - 200px)',
               minHeight: '740px',
+              background: '#18181b',
+              border: '1px solid #27272a',
+              borderRadius: '8px',
             }
       }
     >
-      {/* Top Workflow Editor Header */}
+      {/* Top Workflow Editor Header - React Flow Pro Style */}
       <div style={{
-        background: 'rgba(15, 23, 42, 0.96)',
-        borderBottom: '1px solid var(--border-subtle)',
+        background: '#18181b',
+        borderBottom: '1px solid #27272a',
         padding: '12px 20px',
         display: 'flex',
         alignItems: 'center',
@@ -168,27 +171,26 @@ export function ReflexFlowCanvas({ initialFullscreen = false }: ReflexFlowCanvas
         {/* Domain Title & Badge */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{
-            width: '34px',
-            height: '34px',
-            borderRadius: '8px',
-            background: 'linear-gradient(135deg, #06b6d4, #6366f1)',
+            width: '32px',
+            height: '32px',
+            borderRadius: '6px',
+            background: 'linear-gradient(135deg, #ff0072, #7c3aed)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 15px rgba(6, 182, 212, 0.35)',
           }}>
-            <Layers size={18} color="#ffffff" />
+            <Layers size={17} color="#ffffff" />
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <h3 style={{ fontSize: '15px', fontWeight: 800, color: '#ffffff' }}>
+              <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff' }}>
                 ReflexLoop™ Workflow Automation Canvas
               </h3>
-              <span className="badge-neon badge-cyan" style={{ fontSize: '9px' }}>
-                n8n / Hivvy Flow Style
+              <span className="badge-pink" style={{ fontSize: '9px' }}>
+                React Flow Pro
               </span>
             </div>
-            <p style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
+            <p style={{ fontSize: '11px', color: '#71717a' }}>
               Interactive node graph • Pan, drag, inspect & customize pipelines by customer domain
             </p>
           </div>
@@ -196,7 +198,7 @@ export function ReflexFlowCanvas({ initialFullscreen = false }: ReflexFlowCanvas
 
         {/* Domain Selector Tabs & Fullscreen Action */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginRight: '4px' }}>
+          <span style={{ fontSize: '11px', fontWeight: 600, color: '#71717a', textTransform: 'uppercase', marginRight: '4px' }}>
             Domain Preset:
           </span>
           {Object.values(DOMAIN_PRESETS).map(dom => {
@@ -206,16 +208,16 @@ export function ReflexFlowCanvas({ initialFullscreen = false }: ReflexFlowCanvas
                 key={dom.id}
                 onClick={() => handleDomainChange(dom.id)}
                 style={{
-                  background: isActive ? `${dom.color}25` : 'rgba(30, 41, 59, 0.6)',
-                  color: isActive ? dom.color : 'var(--text-dim)',
-                  border: isActive ? `1px solid ${dom.color}` : '1px solid var(--border-subtle)',
-                  padding: '6px 12px',
+                  background: isActive ? '#27272a' : '#18181b',
+                  color: isActive ? '#ffffff' : '#a1a1aa',
+                  border: isActive ? '1px solid #ff0072' : '1px solid #27272a',
+                  padding: '5px 11px',
                   borderRadius: '6px',
                   fontSize: '11px',
-                  fontWeight: 700,
+                  fontWeight: 600,
                   cursor: 'pointer',
                   transition: 'all 0.15s ease',
-                  boxShadow: isActive ? `0 0 12px ${dom.color}30` : 'none',
+                  boxShadow: isActive ? '0 1px 4px rgba(255, 0, 114, 0.2)' : 'none',
                 }}
               >
                 {dom.name.split(' ')[0]} {dom.name.split(' ')[1]}
@@ -230,7 +232,7 @@ export function ReflexFlowCanvas({ initialFullscreen = false }: ReflexFlowCanvas
             className="btn-neon-primary"
             style={{ padding: '6px 14px', fontSize: '11px', marginLeft: '6px' }}
           >
-            <Play size={13} />
+            <Play size={12} />
             <span>{isSimulating ? 'Tracing ReflexLoop...' : 'Simulate Loop Execution'}</span>
           </button>
 
@@ -238,13 +240,13 @@ export function ReflexFlowCanvas({ initialFullscreen = false }: ReflexFlowCanvas
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
             style={{
-              background: isFullscreen ? 'rgba(56, 189, 248, 0.25)' : 'rgba(30, 41, 59, 0.8)',
-              border: isFullscreen ? '1px solid #38bdf8' : '1px solid var(--border-subtle)',
-              color: isFullscreen ? '#38bdf8' : 'var(--text-primary)',
+              background: isFullscreen ? 'rgba(255, 0, 114, 0.15)' : '#18181b',
+              border: isFullscreen ? '1px solid #ff0072' : '1px solid #27272a',
+              color: isFullscreen ? '#ff6080' : '#a1a1aa',
               borderRadius: '6px',
               padding: '6px 12px',
               fontSize: '11px',
-              fontWeight: 700,
+              fontWeight: 600,
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
@@ -254,7 +256,7 @@ export function ReflexFlowCanvas({ initialFullscreen = false }: ReflexFlowCanvas
             }}
             title={isFullscreen ? 'Exit Full Screen (ESC)' : 'Open Full Screen Workspace'}
           >
-            {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+            {isFullscreen ? <Minimize2 size={13} /> : <Maximize2 size={13} />}
             <span>{isFullscreen ? 'Exit Fullscreen' : 'Full Screen'}</span>
           </button>
         </div>
@@ -262,14 +264,14 @@ export function ReflexFlowCanvas({ initialFullscreen = false }: ReflexFlowCanvas
 
       {/* Domain Summary Bar */}
       <div style={{
-        background: 'rgba(3, 7, 18, 0.75)',
-        borderBottom: '1px solid var(--border-subtle)',
+        background: '#141416',
+        borderBottom: '1px solid #27272a',
         padding: '8px 20px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         fontSize: '11px',
-        color: 'var(--text-dim)',
+        color: '#a1a1aa',
         flexWrap: 'wrap',
         gap: '8px',
         flexShrink: 0,
@@ -277,13 +279,13 @@ export function ReflexFlowCanvas({ initialFullscreen = false }: ReflexFlowCanvas
         <div>
           <strong style={{ color: domainConfig.color }}>{domainConfig.name}:</strong> {domainConfig.description}
         </div>
-        <div style={{ color: '#38bdf8', fontWeight: 600 }}>
+        <div style={{ color: '#ff6080', fontWeight: 600 }}>
           {domainConfig.scenarioHighlight}
         </div>
       </div>
 
-      {/* React Flow Canvas - Expansive Full Screen Area */}
-      <div style={{ flex: 1, width: '100%', position: 'relative', background: '#050811', minHeight: '550px' }}>
+      {/* React Flow Canvas - Clean React Flow Dark Dot Grid */}
+      <div style={{ flex: 1, width: '100%', position: 'relative', background: '#111111', minHeight: '550px' }}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -297,23 +299,23 @@ export function ReflexFlowCanvas({ initialFullscreen = false }: ReflexFlowCanvas
           minZoom={0.2}
           maxZoom={1.8}
         >
-          <Background color="#1e293b" gap={24} size={1.2} />
-          <Controls style={{ background: '#0f172a', border: '1px solid var(--border-subtle)', fill: '#94a3b8', borderRadius: '8px' }} />
+          <Background color="#27272a" gap={20} size={1} />
+          <Controls style={{ background: '#18181b', border: '1px solid #27272a', fill: '#a1a1aa', borderRadius: '8px' }} />
           <MiniMap
             nodeColor={n => {
               if (n.type === 'agentNode') return '#38bdf8';
-              if (n.type === 'gatewayNode') return '#06b6d4';
+              if (n.type === 'gatewayNode') return '#ff0072';
               if (n.type === 'arbiterNode') return '#818cf8';
-              if (n.type === 'blockNode') return '#f43f5e';
+              if (n.type === 'blockNode') return '#ef4444';
               if (n.type === 'humanReviewNode') return '#f59e0b';
               if (n.type === 'toolNode') return '#10b981';
               if (n.type === 'verifierNode') return '#34d399';
               if (n.type === 'recorderNode') return '#a78bfa';
-              if (n.type === 'failureMemoryNode') return '#f472b6';
+              if (n.type === 'failureMemoryNode') return '#ff6080';
               if (n.type === 'replayNode') return '#fbbf24';
               return '#10b981';
             }}
-            style={{ background: 'rgba(15, 23, 42, 0.9)', border: '1px solid var(--border-subtle)', borderRadius: '10px' }}
+            style={{ background: '#141416', border: '1px solid #27272a', borderRadius: '8px' }}
           />
         </ReactFlow>
 
@@ -324,46 +326,45 @@ export function ReflexFlowCanvas({ initialFullscreen = false }: ReflexFlowCanvas
             top: '20px',
             right: '20px',
             width: '320px',
-            background: 'rgba(15, 23, 42, 0.96)',
-            border: '1px solid rgba(56, 189, 248, 0.4)',
-            borderRadius: '12px',
-            padding: '18px',
-            boxShadow: '0 12px 35px rgba(0,0,0,0.8)',
-            backdropFilter: 'blur(16px)',
+            background: '#18181b',
+            border: '1px solid #3f3f46',
+            borderRadius: '8px',
+            padding: '16px',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5)',
             zIndex: 10,
-            animation: 'fadeIn 0.2s ease',
+            animation: 'fadeIn 0.15s ease',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-              <span className="badge-neon badge-cyan" style={{ fontSize: '10px' }}>
+              <span className="badge-pink" style={{ fontSize: '10px' }}>
                 {selectedNode.data.category || 'PIPELINE STAGE'}
               </span>
               <button
                 onClick={() => setSelectedNode(null)}
-                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '15px' }}
+                style={{ background: 'none', border: 'none', color: '#71717a', cursor: 'pointer', fontSize: '15px' }}
               >
                 ✕
               </button>
             </div>
-            <h4 style={{ fontSize: '15px', fontWeight: 800, color: '#ffffff', marginBottom: '6px' }}>
+            <h4 style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff', marginBottom: '6px' }}>
               {selectedNode.data.label}
             </h4>
-            <p style={{ fontSize: '12px', color: 'var(--text-dim)', lineHeight: '1.45', marginBottom: '12px' }}>
+            <p style={{ fontSize: '12px', color: '#a1a1aa', lineHeight: '1.45', marginBottom: '12px' }}>
               {selectedNode.data.description}
             </p>
             <div style={{
               fontSize: '11px',
-              color: '#38bdf8',
-              background: 'rgba(56, 189, 248, 0.1)',
-              border: '1px solid rgba(56, 189, 248, 0.2)',
+              color: '#f4f4f5',
+              background: '#222226',
+              border: '1px solid #27272a',
               padding: '8px 10px',
               borderRadius: '6px',
               display: 'flex',
               flexDirection: 'column',
               gap: '4px',
             }}>
-              <div><strong>Node ID:</strong> <code>{selectedNode.id}</code></div>
-              <div><strong>State:</strong> <span style={{ color: '#34d399', fontWeight: 700 }}>ACTIVE_ISOLATED</span></div>
-              <div><strong>Latency Budget:</strong> &lt; 250ms</div>
+              <div><strong style={{ color: '#a1a1aa' }}>Node ID:</strong> <code style={{ color: '#ff6080' }}>{selectedNode.id}</code></div>
+              <div><strong style={{ color: '#a1a1aa' }}>State:</strong> <span style={{ color: '#34d399', fontWeight: 600 }}>ACTIVE_ISOLATED</span></div>
+              <div><strong style={{ color: '#a1a1aa' }}>Latency Budget:</strong> &lt; 250ms</div>
             </div>
           </div>
         )}
