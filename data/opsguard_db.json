@@ -673,9 +673,9 @@
         "provider": "AGENT_ROUTER"
       },
       "latestReplayResult": {
-        "replayId": "sbx_1790517643740_cs845",
+        "replayId": "sbx_1790517873229_fkjel",
         "clusterId": "cluster_supplier_alias_mismatch",
-        "timestamp": "2026-09-27T14:00:43.740Z",
+        "timestamp": "2026-09-27T14:04:33.229Z",
         "cases_total": 17,
         "before_success": 0,
         "after_success": 15,
@@ -873,14 +873,14 @@
           }
         ],
         "aiAudit": {
-          "model": "deepseek-v4-flash",
+          "model": "claude-opus-4-8",
           "provider": "AGENT_ROUTER",
           "verdict": "APPROVED_SAFE_FOR_PRODUCTION",
           "safetyScore": 99.4,
           "mathematicalNonMutationVerified": true,
-          "executiveSummary": "Agent Router [deepseek-v4-flash] Attestation: Patch resolves 15 of 17 historic failures (88% throughput restoration) with 0 regressions and zero live state mutation.",
+          "executiveSummary": "Agent Router [claude-opus-4-8] Attestation: Patch resolves 15 of 17 historic failures (88% throughput restoration) with 0 regressions and zero live state mutation.",
           "regressionRisk": "Strict isolation confirmed: No side effects on existing catalog entries or active ledger records.",
-          "latencyMs": 350
+          "latencyMs": 1328
         }
       }
     },
